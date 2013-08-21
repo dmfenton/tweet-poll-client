@@ -25,7 +25,7 @@ var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
-var LEVEL = 3;
+var LEVEL = 4;
 
 /******************************************************
 ***************** end config section ******************
@@ -35,6 +35,7 @@ var _map;
 var _recsSpreadSheet;
 var _locations;
 var _center;
+var _selected;
 
 var _dojoReady = false;
 var _jqueryReady = false;
@@ -144,9 +145,7 @@ function init() {
 		$.each(unique, function(index, value) {
 			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
 			rec = recs[0]
-			sym =   new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 10*recs.length,
-					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
-					new dojo.Color([0,0,233,0.25]));
+			sym = createSymbol(recs.length*10);
 			if ($.trim(rec[SPREADSHEET_FIELDNAME_X]) != "") {
 				pt = new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]);
 				_locations.push(new esri.Graphic(pt, sym, {standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length}));
@@ -160,6 +159,15 @@ function init() {
 	
 }
 
+function createSymbol(size)
+{
+	return new esri.symbol.SimpleMarkerSymbol(
+				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
+				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
+				new dojo.Color([0,0,233,0.25])
+			);	
+}
+
 function finishInit() {
 	
 	if (!_recsSpreadSheet) return false;	
@@ -168,15 +176,10 @@ function finishInit() {
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
 	});
-	
-	/*
-	
-	use this for layer interactivity
-	
-	dojo.connect(_layerOV, "onMouseOver", layerOV_onMouseOver);
-	dojo.connect(_layerOV, "onMouseOut", layerOV_onMouseOut);
-	dojo.connect(_layerOV, "onClick", layerOV_onClick);		
-	*/
+		
+	dojo.connect(_map.graphics, "onMouseOver", layerOV_onMouseOver);
+	dojo.connect(_map.graphics, "onMouseOut", layerOV_onMouseOut);
+	dojo.connect(_map.graphics, "onClick", layerOV_onClick);		
 	
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
@@ -199,20 +202,19 @@ function parseSpreadsheet(lines)
 }
 
 
-/*
-
-sample layer event code.
-
 function layerOV_onMouseOver(event) 
 {
 	if (_isMobile) return;
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
+	graphic.setSymbol(createSymbol(10*graphic.attributes.count+3));
+	/*
 	if ($.inArray(graphic, _selected) == -1) {
 		graphic.setSymbol(resizeSymbol(graphic.symbol, _lutBallIconSpecs.medium));
 	}
 	if (!_isIE) moveGraphicToFront(graphic);	
-	$("#hoverInfo").html("<b>"+graphic.attributes.getLanguage()+"</b>"+"<p>"+graphic.attributes.getRegion());
+	*/
+	$("#hoverInfo").html(graphic.attributes.standardizedName.split(",")[0]);
 	var pt = _map.toScreen(graphic.geometry);
 	hoverInfoPos(pt.x,pt.y);	
 }
@@ -223,9 +225,13 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
+	graphic.setSymbol(createSymbol(10*graphic.attributes.count));
+
+	/*
 	if ($.inArray(graphic, _selected) == -1) {
 		graphic.setSymbol(resizeSymbol(graphic.symbol, _lutBallIconSpecs.tiny));
 	}
+	*/
 }
 
 
@@ -233,12 +239,17 @@ function layerOV_onClick(event)
 {
 	$("#hoverInfo").hide();
 	var graphic = event.graphic;
+	//_map.infoWindow.show(graphic.geometry);
+	_selected = graphic;
+	/*
 	_languageID = graphic.attributes.getLanguageID();
 	$("#selectLanguage").val(_languageID);
 	changeState(STATE_SELECTION_OVERVIEW);
 	scrollToPage($.inArray($.grep($("#listThumbs").children("li"),function(n,i){return n.value == _languageID})[0], $("#listThumbs").children("li")));	
+	*/
 }
 
+/*
 function createIconMarker(iconPath, spec) 
 {
 	return new esri.symbol.PictureMarkerSymbol(iconPath, spec.getWidth(), spec.getHeight()); 
@@ -255,6 +266,9 @@ function moveGraphicToFront(graphic)
 	if (dojoShape) dojoShape.moveToFront();
 }
 
+
+*/
+
 function hoverInfoPos(x,y){
 	if (x <= ($("#map").width())-230){
 		$("#hoverInfo").css("left",x+15);
@@ -270,9 +284,6 @@ function hoverInfoPos(x,y){
 	}
 	$("#hoverInfo").show();
 }
-
-*/
-
 
 function handleWindowResize() {
 	if ((($("body").height() <= 500) || ($("body").width() <= 800)) || _isEmbed) $("#header").height(0);
