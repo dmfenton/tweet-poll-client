@@ -7,12 +7,11 @@ dojo.require("esri.map");
 ***************** begin config section ****************
 *******************************************************/
 
-var TITLE = "This is the title."
-var BYLINE = "This is the byline"
+var TITLE = "Map My Lyrics"
 var WEBMAP_ID = "3732b8a6d0bc4a09b00247e8daf69af8";
 var GEOMETRY_SERVICE_URL = "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
 var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9AptdHdvUDd4NnRVOEhpcExwQldNN3BlZHc&output=csv";
-var PROXY_URL = "http://localhost/proxy/proxy.ashx";
+var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? "http://storymaps.esri.com/proxy/proxy.ashx" : "http://localhost/proxy/proxy.ashx";
 var BASEMAP_SERVICE_SATELLITE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
@@ -109,7 +108,6 @@ function init() {
     });
 	
 	$("#title").append(TITLE);
-	$("#subtitle").append(BYLINE);	
 	
 	_map = new esri.Map("map", {slider:false});
 	
@@ -142,13 +140,17 @@ function init() {
 		var recs;
 		var rec;
 		var sym;
+		var pt;
 		$.each(unique, function(index, value) {
 			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
 			rec = recs[0]
-			sym =   new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 10*recs.length,
-					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255,0,0]), 1),
-					new dojo.Color([0,255,0,0.25]));
-			_locations.push(new esri.Graphic(new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]),sym,{standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length}));
+			sym =   new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 10*recs.length,
+					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
+					new dojo.Color([0,0,233,0.25]));
+			if ($.trim(rec[SPREADSHEET_FIELDNAME_X]) != "") {
+				pt = new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]);
+				_locations.push(new esri.Graphic(pt, sym, {standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length}));
+			}
 		});
 		
 		finishInit();
