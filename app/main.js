@@ -39,6 +39,7 @@ var _dojoReady = false;
 var _jqueryReady = false;
 
 var _isMobile = isMobile();
+var _isIE = (navigator.appVersion.indexOf("MSIE") > -1);
 
 var _isEmbed = false;
 
@@ -50,36 +51,9 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
-	var params = esri.urlToObject(document.location.href).query;
-	if (params != null) {
-		
-		$.each(params,function(index,value){
-			
-			if (index.toLowerCase() == "center") {
-				_center = new esri.geometry.Point(value.split(",")[0], value.split(",")[1]);
-			}
-			
-			if (index.toLowerCase() == "level") {
-				LEVEL = value;
-			}
-			
-		});
-	}
-	
-	if (!_center) _center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
+	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 
 	esri.config.defaults.io.proxyUrl = PROXY_URL;	
-	
-	// determine whether we're in embed mode
-	
-	var queryString = esri.urlToObject(document.location.href).query;
-	if (queryString) {
-		if (queryString.embed) {
-			if (queryString.embed.toUpperCase() == "TRUE") {
-				_isEmbed = true;
-			}
-		}
-	}
 	
 	// jQuery event assignment
 	
@@ -165,6 +139,23 @@ function finishInit() {
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
 	});
+	
+	var params = esri.urlToObject(document.location.href).query;
+	var starterName;
+	if (params != null) {
+		$.each(params,function(index,value){			
+			if (index.toLowerCase() == "standardizedname") {
+				starterName = value
+			}
+		});
+	}
+	if (starterName) {
+		_selected = $.grep(_locations, function(n, i) {
+			return n.attributes.standardizedName == starterName;
+		})[0];
+		postSelection();
+		_map.centerAndZoom(_selected.geometry, 5);
+	}
 		
 	dojo.connect(_map.graphics, "onMouseOver", layerOV_onMouseOver);
 	dojo.connect(_map.graphics, "onMouseOut", layerOV_onMouseOut);
@@ -202,7 +193,6 @@ function layerOV_onMouseOver(event)
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
 	}
-
 
 	if (!_isIE) moveGraphicToFront(graphic);	
 
