@@ -15,7 +15,6 @@ var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9Apt
 var PROXY_URL = "http://localhost/proxy/proxy.ashx";
 var BASEMAP_SERVICE_SATELLITE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
-
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
 var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
@@ -25,6 +24,10 @@ var SPREADSHEET_FIELDNAME_X = "X";
 var SPREADSHEET_FIELDNAME_Y = "Y";
 var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 
+var CENTER_X = -10910315;
+var CENTER_Y = 4002853;
+var LEVEL = 3;
+
 /******************************************************
 ***************** end config section ******************
 *******************************************************/
@@ -32,12 +35,10 @@ var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 var _map;
 var _recsSpreadSheet;
 var _locations;
+var _center;
 
 var _dojoReady = false;
 var _jqueryReady = false;
-
-var _homeExtent; // set this in init() if desired; otherwise, it will 
-				 // be the default extent of the web map;
 
 var _isMobile = isMobile();
 
@@ -62,8 +63,24 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
-	_homeExtent = new esri.geometry.Extent(-16843052.05669072, 508764.86026601424, -4319609.3424507715, 8805545.65844998, new esri.SpatialReference(102100));
+	var params = esri.urlToObject(document.location.href).query;
+	if (params != null) {
+		
+		$.each(params,function(index,value){
+			
+			if (index.toLowerCase() == "center") {
+				_center = new esri.geometry.Point(value.split(",")[0], value.split(",")[1]);
+			}
+			
+			if (index.toLowerCase() == "level") {
+				LEVEL = value;
+			}
+			
+		});
+	}
 	
+	if (!_center) _center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
+
 	esri.config.defaults.io.proxyUrl = PROXY_URL;	
 	
 	// determine whether we're in embed mode
@@ -88,15 +105,17 @@ function init() {
         _map.setLevel(_map.getLevel()-1);
     });
 	$("#zoomExtent").click(function(e) {
-        _map.setExtent(_homeExtent);
+        _map.centerAndZoom(_center, LEVEL);
     });
 	
 	$("#title").append(TITLE);
 	$("#subtitle").append(BYLINE);	
 	
-	_map = new esri.Map("map", {slider:false, extent:_homeExtent});
+	_map = new esri.Map("map", {slider:false});
 	
 	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE_SATELLITE));
+	_map.centerAndZoom(_center, LEVEL);
+	
 
 	if(_map.loaded){
 		finishInit();
@@ -147,21 +166,6 @@ function finishInit() {
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
 	});
-	
-	// if _homeExtent hasn't been set, then default to the initial extent
-	// of the web map.  On the other hand, if it HAS been set AND we're using
-	// the embed option, we need to reset the extent (because the map dimensions
-	// have been changed on the fly).
-
-	if (!_homeExtent) {
-		_homeExtent = _map.extent;
-	} else {
-		if (_isEmbed) {
-			setTimeout(function(){
-				_map.setExtent(_homeExtent)
-			},500);
-		}	
-	}
 	
 	/*
 	
