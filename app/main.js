@@ -8,11 +8,9 @@ dojo.require("esri.map");
 *******************************************************/
 
 var TITLE = "Map My Lyrics"
-var WEBMAP_ID = "3732b8a6d0bc4a09b00247e8daf69af8";
-var GEOMETRY_SERVICE_URL = "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
 var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9AptdHdvUDd4NnRVOEhpcExwQldNN3BlZHc&output=csv";
 var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? "http://storymaps.esri.com/proxy/proxy.ashx" : "http://localhost/proxy/proxy.ashx";
-var BASEMAP_SERVICE_SATELLITE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
+var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
@@ -43,17 +41,6 @@ var _jqueryReady = false;
 var _isMobile = isMobile();
 
 var _isEmbed = false;
-
-/*
-
-might need this if you're using icons.
-
-var _lutBallIconSpecs = {
-	tiny:new IconSpecs(24,24,12,12),
-	medium:new IconSpecs(30,30,15,15),
-	large:new IconSpecs(30,30,15,15)
-}
-*/
 
 dojo.addOnLoad(function() {_dojoReady = true;init()});
 jQuery(document).ready(function() {_jqueryReady = true;init()});
@@ -112,7 +99,7 @@ function init() {
 	
 	_map = new esri.Map("map", {slider:false});
 	
-	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE_SATELLITE));
+	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE));
 	_map.centerAndZoom(_center, LEVEL);
 	
 
@@ -142,13 +129,15 @@ function init() {
 		var rec;
 		var sym;
 		var pt;
+		var atts;
 		$.each(unique, function(index, value) {
 			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
 			rec = recs[0]
 			sym = createSymbol(recs.length*10);
 			if ($.trim(rec[SPREADSHEET_FIELDNAME_X]) != "") {
 				pt = new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]);
-				_locations.push(new esri.Graphic(pt, sym, {standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length}));
+				atts = {name:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME].split(",")[0], standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length};
+				_locations.push(new esri.Graphic(pt, sym, atts));
 			}
 		});
 		
@@ -207,16 +196,16 @@ function layerOV_onMouseOver(event)
 	if (_isMobile) return;
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
-	graphic.setSymbol(createSymbol(10*graphic.attributes.count+3));
-	/*
-	if ($.inArray(graphic, _selected) == -1) {
-		graphic.setSymbol(resizeSymbol(graphic.symbol, _lutBallIconSpecs.medium));
+	if (graphic!=_selected) {
+		graphic.setSymbol(createSymbol(10*graphic.attributes.count+3));
+		$("#hoverInfo").html(graphic.attributes.standardizedName.split(",")[0]);
+		var pt = _map.toScreen(graphic.geometry);
+		hoverInfoPos(pt.x,pt.y);	
 	}
+
+
 	if (!_isIE) moveGraphicToFront(graphic);	
-	*/
-	$("#hoverInfo").html(graphic.attributes.standardizedName.split(",")[0]);
-	var pt = _map.toScreen(graphic.geometry);
-	hoverInfoPos(pt.x,pt.y);	
+
 }
 
 
@@ -226,12 +215,6 @@ function layerOV_onMouseOut(event)
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
 	graphic.setSymbol(createSymbol(10*graphic.attributes.count));
-
-	/*
-	if ($.inArray(graphic, _selected) == -1) {
-		graphic.setSymbol(resizeSymbol(graphic.symbol, _lutBallIconSpecs.tiny));
-	}
-	*/
 }
 
 
@@ -239,25 +222,22 @@ function layerOV_onClick(event)
 {
 	$("#hoverInfo").hide();
 	var graphic = event.graphic;
-	//_map.infoWindow.show(graphic.geometry);
 	_selected = graphic;
-	/*
-	_languageID = graphic.attributes.getLanguageID();
-	$("#selectLanguage").val(_languageID);
-	changeState(STATE_SELECTION_OVERVIEW);
-	scrollToPage($.inArray($.grep($("#listThumbs").children("li"),function(n,i){return n.value == _languageID})[0], $("#listThumbs").children("li")));	
-	*/
+	postSelection();
 }
 
-/*
-function createIconMarker(iconPath, spec) 
+function postSelection()
 {
-	return new esri.symbol.PictureMarkerSymbol(iconPath, spec.getWidth(), spec.getHeight()); 
-}
-
-function resizeSymbol(symbol, spec)
-{
-	return symbol.setWidth(spec.getWidth()).setHeight(spec.getHeight())	
+	$("#map").multiTips({
+		pointArray : [_selected],
+		attributeLabelField: "name",
+		mapVariable : _map,
+		labelDirection : "top",
+		backgroundColor : "#000000",
+		textColor : "#FFFFFF",
+		pointerColor: "#000000"
+	});		
+	
 }
 
 function moveGraphicToFront(graphic)
@@ -265,9 +245,6 @@ function moveGraphicToFront(graphic)
 	var dojoShape = graphic.getDojoShape();
 	if (dojoShape) dojoShape.moveToFront();
 }
-
-
-*/
 
 function hoverInfoPos(x,y){
 	if (x <= ($("#map").width())-230){
