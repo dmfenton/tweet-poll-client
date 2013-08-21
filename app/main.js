@@ -13,6 +13,8 @@ var WEBMAP_ID = "3732b8a6d0bc4a09b00247e8daf69af8";
 var GEOMETRY_SERVICE_URL = "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
 var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9AptdHdvUDd4NnRVOEhpcExwQldNN3BlZHc&output=csv";
 var PROXY_URL = "http://localhost/proxy/proxy.ashx";
+var BASEMAP_SERVICE_SATELLITE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
+
 
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
@@ -28,6 +30,8 @@ var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 *******************************************************/
 
 var _map;
+var _recsSpreadSheet;
+var _locations;
 
 var _dojoReady = false;
 var _jqueryReady = false;
@@ -58,6 +62,8 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
+	_homeExtent = new esri.geometry.Extent(-16843052.05669072, 508764.86026601424, -4319609.3424507715, 8805545.65844998, new esri.SpatialReference(102100));
+	
 	esri.config.defaults.io.proxyUrl = PROXY_URL;	
 	
 	// determine whether we're in embed mode
@@ -87,30 +93,18 @@ function init() {
 	
 	$("#title").append(TITLE);
 	$("#subtitle").append(BYLINE);	
-
-	var mapDeferred = esri.arcgis.utils.createMap(WEBMAP_ID, "map", {
-		mapOptions: {
-			slider: false,
-			wrapAround180: true,
-			extent:_homeExtent
-		},
-		ignorePopups: false,
-		geometryServiceURL: GEOMETRY_SERVICE_URL
-	});
 	
-	mapDeferred.addCallback(function(response) {	  
+	_map = new esri.Map("map", {slider:false, extent:_homeExtent});
+	
+	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE_SATELLITE));
 
-		_map = response.map;
-
-		if(_map.loaded){
-			initMap();
-		} else {
-			dojo.connect(_map,"onLoad",function(){
-				initMap();
-			});
-		}
-				
-	});
+	if(_map.loaded){
+		finishInit();
+	} else {
+		dojo.connect(_map,"onLoad",function(){
+			finishInit();
+		});
+	}
 	
 	var serviceCSV = new CSVService();
 	$(serviceCSV).bind("complete", function() {	
@@ -125,19 +119,34 @@ function init() {
 			}
 		});
 
-		var locations = [];
+		_locations = [];
+		var recs;
 		var rec;
+		var sym;
 		$.each(unique, function(index, value) {
-			rec = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value})[0];
-			locations.push(new esri.Graphic(new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]),null,{standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME]}));
+			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
+			rec = recs[0]
+			sym =   new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 10*recs.length,
+					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255,0,0]), 1),
+					new dojo.Color([0,255,0,0.25]));
+			_locations.push(new esri.Graphic(new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]),sym,{standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length}));
 		});
+		
+		finishInit();
 
 	});
 	serviceCSV.process(SPREADSHEET_URL);	
 	
 }
 
-function initMap() {
+function finishInit() {
+	
+	if (!_recsSpreadSheet) return false;	
+	if (!_map.loaded) return false;
+	
+	$.each(_locations, function(index, value) {
+		_map.graphics.add(value);
+	});
 	
 	// if _homeExtent hasn't been set, then default to the initial extent
 	// of the web map.  On the other hand, if it HAS been set AND we're using
