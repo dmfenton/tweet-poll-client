@@ -154,3 +154,16 @@ a:hover{
 	cursor:pointer;
 }
 
+#info {
+	position:absolute;
+	width:300px;
+	background-color:#FFFFFF;
+	z-index:100;
+	right:20px;
+	top:20px;
+	display:none;
+	border:solid;
+	border-width:thin;
+	padding:10px;
+}
+

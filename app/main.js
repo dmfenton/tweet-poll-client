@@ -228,6 +228,24 @@ function postSelection()
 		pointerColor: "#000000"
 	});		
 	
+	var recs = queryRecsByCity(_selected.attributes.standardizedName);
+	$("#info").empty();
+	$.each(recs, function(index, value) {
+		$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append(value[SPREADSHEET_FIELDNAME_LYRICS]);
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+	});
+	$("#info").slideDown();
+	
+}
+
+function queryRecsByCity(name)
+{
+	return $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == name});
 }
 
 function moveGraphicToFront(graphic)
