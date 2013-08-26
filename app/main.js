@@ -161,6 +161,15 @@ function finishInit() {
 	dojo.connect(_map.graphics, "onMouseOut", layerOV_onMouseOut);
 	dojo.connect(_map.graphics, "onClick", layerOV_onClick);		
 	
+	// click action on the map where there's no graphic 
+	// causes a deselect.
+
+	dojo.connect(_map, 'onClick', function(event){
+		if (event.graphic == null) {
+			deselect();
+		}
+	});
+	
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
 	
@@ -214,6 +223,21 @@ function layerOV_onClick(event)
 	var graphic = event.graphic;
 	_selected = graphic;
 	postSelection();
+}
+
+function deselect()
+{
+	_selected = null;
+	$("#info").slideUp();
+	$("#map").multiTips({
+		pointArray : [],
+		attributeLabelField: "name",
+		mapVariable : _map,
+		labelDirection : "top",
+		backgroundColor : "#000000",
+		textColor : "#FFFFFF",
+		pointerColor: "#000000"
+	});		
 }
 
 function postSelection()
