@@ -165,5 +165,6 @@ a:hover{
 	border:solid;
 	border-width:thin;
 	padding:10px;
+	overflow:auto;
 }
 

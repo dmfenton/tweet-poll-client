@@ -277,4 +277,5 @@ function handleWindowResize() {
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
+	$("#info").css("max-height", $("#map").height()-100);
 }
