@@ -240,6 +240,9 @@ function postSelection()
 		$("#info").append("<br>");
 	});
 	$("#info").slideDown();
+	// make sure point doesn't occupy right-most 400px of map.
+	if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
+		_map.centerAt(_selected.geometry);
 	
 }
 
