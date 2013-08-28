@@ -107,13 +107,16 @@ function init() {
 		$.each(unique, function(index, value) {
 			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
 			rec = recs[0]
-			sym = createSymbol(recs.length*10);
+			sym = createSymbol(recs.length*10,0.25);
 			if ($.trim(rec[SPREADSHEET_FIELDNAME_X]) != "") {
 				pt = new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]);
 				atts = {name:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME].split(",")[0], standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length};
 				_locations.push(new esri.Graphic(pt, sym, atts));
 			}
 		});
+
+		// sort unique locations in descening order of count
+		_locations.sort(function(a,b){console.log(a.attributes.count, b.attributes.count);return b.attributes.count - a.attributes.count});
 		
 		finishInit();
 
@@ -122,12 +125,12 @@ function init() {
 	
 }
 
-function createSymbol(size)
+function createSymbol(size, opacity)
 {
 	return new esri.symbol.SimpleMarkerSymbol(
 				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
 				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
-				new dojo.Color([0,0,233,0.25])
+				new dojo.Color([0,0,233,opacity])
 			);	
 }
 
@@ -197,14 +200,11 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(10*graphic.attributes.count+3));
+		graphic.setSymbol(createSymbol(10*graphic.attributes.count+3,0.35));
 		$("#hoverInfo").html(graphic.attributes.standardizedName.split(",")[0]);
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
 	}
-
-	if (!_isIE) moveGraphicToFront(graphic);	
-
 }
 
 
@@ -213,7 +213,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(10*graphic.attributes.count));
+	graphic.setSymbol(createSymbol(10*graphic.attributes.count,0.25));
 }
 
 
