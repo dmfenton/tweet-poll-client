@@ -283,7 +283,7 @@ function moveGraphicToFront(graphic)
 
 function hoverInfoPos(x,y){
 	if (x <= ($("#map").width())-230){
-		$("#hoverInfo").css("left",x+15);
+		$("#hoverInfo").css("left",(x-($("#hoverInfo").width()/2))-5);
 	}
 	else{
 		$("#hoverInfo").css("left",x-25-($("#hoverInfo").width()));
