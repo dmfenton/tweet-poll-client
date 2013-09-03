@@ -115,8 +115,8 @@ function init() {
 			}
 		});
 
-		// sort unique locations in descening order of count
-		_locations.sort(function(a,b){console.log(a.attributes.count, b.attributes.count);return b.attributes.count - a.attributes.count});
+		// sort unique locations in descending order of count
+		_locations.sort(function(a,b){return b.attributes.count - a.attributes.count});
 		
 		finishInit();
 
