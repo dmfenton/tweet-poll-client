@@ -8,18 +8,19 @@ dojo.require("esri.map");
 *******************************************************/
 
 var TITLE = "Lyrical Locations"
-var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9AptdHdvUDd4NnRVOEhpcExwQldNN3BlZHc&output=csv";
-var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? "http://storymaps.esri.com/proxy/proxy.ashx" : "http://localhost/proxy/proxy.ashx";
 var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
+
+var LOCATIONS_FIELDNAME_X = "X";
+var LOCATIONS_FIELDNAME_Y = "Y";
+var LOCATIONS_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
+var LOCATIONS_FIELDNAME_COUNT = "Count";
+var LOCATIONS_FIELDNAME_SHORTNAME = "Short_name";
 
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
 var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
 var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
 var SPREADSHEET_FIELDNAME_LYRICS = "Lyrics";
-var SPREADSHEET_FIELDNAME_X = "X";
-var SPREADSHEET_FIELDNAME_Y = "Y";
-var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
@@ -52,8 +53,6 @@ function init() {
 	if (!_dojoReady) return;
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
-
-	esri.config.defaults.io.proxyUrl = PROXY_URL;	
 	
 	// jQuery event assignment
 	
@@ -84,45 +83,28 @@ function init() {
 			finishInit();
 		});
 	}
+
+	_locations = [];
+	var pt;
 	
-	var serviceCSV = new CSVService();
-	$(serviceCSV).bind("complete", function() {	
-	
-		_recsSpreadSheet = parseSpreadsheet(serviceCSV.getLines());
-
-		var unique = [];
-		var graphic;
-		$.each(_recsSpreadSheet, function(index, value){
-			if ($.inArray(value[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME], unique) == -1) {
-				unique.push(value[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME]);
-			}
-		});
-
-		_locations = [];
-		var recs;
-		var rec;
-		var sym;
-		var pt;
-		var atts;
-		$.each(unique, function(index, value) {
-			recs = $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == value});
-			rec = recs[0]
-			sym = createSymbol(recs.length*10,0.25);
-			if ($.trim(rec[SPREADSHEET_FIELDNAME_X]) != "") {
-				pt = new esri.geometry.Point(rec[SPREADSHEET_FIELDNAME_X], rec[SPREADSHEET_FIELDNAME_Y]);
-				atts = {name:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME].split(",")[0], standardizedName:rec[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],count:recs.length};
-				_locations.push(new esri.Graphic(pt, sym, atts));
-			}
-		});
-
+	$.ajax({
+	  type: 'GET',
+	  dataType:'json',
+	  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Name&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Name%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
+	  cache: false,
+	  success: function(text) {
+		  $.each(text.features, function(index, value) {
+			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
+				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
+					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
+					_locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
+				}
+		  });
 		// sort unique locations in descending order of count
-		_locations.sort(function(a,b){return b.attributes.count - a.attributes.count});
-		
-		finishInit();
-
-	});
-	serviceCSV.process(SPREADSHEET_URL);	
-	
+		_locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
+		finishInit();		  
+	  }
+	});		
 }
 
 function createSymbol(size, opacity)
@@ -136,7 +118,7 @@ function createSymbol(size, opacity)
 
 function finishInit() {
 	
-	if (!_recsSpreadSheet) return false;	
+	if (!_locations) return false;	
 	if (!_map.loaded) return false;
 	
 	$.each(_locations, function(index, value) {
@@ -178,30 +160,14 @@ function finishInit() {
 	
 }
 
-function parseSpreadsheet(lines)
-{
-	var parser = new ParserMain([
-		SPREADHSEET_FIELDNAME_PLACENAME,
-		SPREADSHEET_FIELDNAME_SONG,
-		SPREADSHEET_FIELDNAME_ARTIST,
-		SPREADSHEET_FIELDNAME_HANDLE,
-		SPREADSHEET_FIELDNAME_LYRICS,
-		SPREADSHEET_FIELDNAME_X,
-		SPREADSHEET_FIELDNAME_Y,
-		SPREADSHEET_FIELDNAME_STANDARDIZEDNAME
-	]);
-	return parser.getRecs(lines);
-}
-
-
 function layerOV_onMouseOver(event) 
 {
 	if (_isMobile) return;
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(10*graphic.attributes.count+3,0.35));
-		$("#hoverInfo").html(graphic.attributes.standardizedName.split(",")[0]);
+		graphic.setSymbol(createSymbol(10*graphic.attributes[LOCATIONS_FIELDNAME_COUNT]+3,0.35));
+		$("#hoverInfo").html(graphic.attributes[LOCATIONS_FIELDNAME_SHORTNAME]);
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
 	}
@@ -213,7 +179,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(10*graphic.attributes.count,0.25));
+	graphic.setSymbol(createSymbol(10*graphic.attributes[LOCATIONS_FIELDNAME_COUNT],0.25));
 }
 
 
@@ -244,7 +210,7 @@ function postSelection()
 {
 	$("#map").multiTips({
 		pointArray : [_selected],
-		attributeLabelField: "name",
+		attributeLabelField: LOCATIONS_FIELDNAME_SHORTNAME,
 		mapVariable : _map,
 		labelDirection : "top",
 		backgroundColor : "#000000",
@@ -272,7 +238,7 @@ function postSelection()
 
 function queryRecsByCity(name)
 {
-	return $.grep(_recsSpreadSheet, function(n,i){return n[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME] == name});
+	return $.grep(_recsSpreadSheet, function(n,i){return n[LOCATIONS_FIELDNAME_STANDARDIZEDNAME] == name});
 }
 
 function moveGraphicToFront(graphic)
