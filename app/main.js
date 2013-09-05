@@ -90,40 +90,6 @@ function init() {
 	
 }
 
-function getLocations(callBack) 
-{
-	var locations = [];
-	var pt;
-	
-	$.ajax({
-	  type: 'GET',
-	  dataType:'json',
-	  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Name&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Name%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
-	  cache: false,
-	  success: function(text) {
-		  $.each(text.features, function(index, value) {
-			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
-				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
-					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
-					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
-				}
-		  });
-		// sort unique locations in descending order of count
-		locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
-		callBack(locations);	
-	  }
-	});		
-}
-
-function createSymbol(size, opacity)
-{
-	return new esri.symbol.SimpleMarkerSymbol(
-				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
-				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
-				new dojo.Color([0,0,233,opacity])
-			);	
-}
-
 function finishInit() {
 	
 	if (!_locations) return false;	
@@ -280,3 +246,38 @@ function handleWindowResize() {
 	_map.resize();
 	$("#info").css("max-height", $("#map").height()-100);
 }
+
+function getLocations(callBack) 
+{
+	var locations = [];
+	var pt;
+	
+	$.ajax({
+	  type: 'GET',
+	  dataType:'json',
+	  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Name&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Name%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
+	  cache: false,
+	  success: function(text) {
+		  $.each(text.features, function(index, value) {
+			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
+				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
+					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
+					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
+				}
+		  });
+		// sort unique locations in descending order of count
+		locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
+		callBack(locations);	
+	  }
+	});		
+}
+
+function createSymbol(size, opacity)
+{
+	return new esri.symbol.SimpleMarkerSymbol(
+				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
+				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
+				new dojo.Color([0,0,233,opacity])
+			);	
+}
+
