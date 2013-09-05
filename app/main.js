@@ -10,6 +10,8 @@ dojo.require("esri.map");
 var TITLE = "Lyrical Locations"
 var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
+var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0";
+
 var LOCATIONS_FIELDNAME_X = "X";
 var LOCATIONS_FIELDNAME_Y = "Y";
 var LOCATIONS_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
@@ -193,28 +195,38 @@ function postSelection()
 		textColor : "#FFFFFF",
 		pointerColor: "#000000"
 	});		
-	
-	var recs = queryRecsByCity(_selected.attributes.standardizedName);
-	$("#info").empty();
-	$.each(recs, function(index, value) {
-		$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-		$("#info").append(value[SPREADSHEET_FIELDNAME_LYRICS]);
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-	});
-	$("#info").slideDown();
-	// make sure point doesn't occupy right-most 400px of map.
-	if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
-		_map.centerAt(_selected.geometry);
-	
+
+	queryRecsByCity(_selected.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME], function(recs){
+		$("#info").empty();
+		$.each(recs, function(index, value) {
+			$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
+			$("#info").append("<br>");
+			$("#info").append("<br>");
+			$("#info").append(value[SPREADSHEET_FIELDNAME_LYRICS]);
+			$("#info").append("<br>");
+			$("#info").append("<br>");
+			$("#info").append("<br>");
+		});
+		$("#info").slideDown();
+		// make sure point doesn't occupy right-most 400px of map.
+		if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
+			_map.centerAt(_selected.geometry);
+	});	
 }
 
-function queryRecsByCity(name)
+function queryRecsByCity(name,callBack)
 {
-	return $.grep(_recsSpreadSheet, function(n,i){return n[LOCATIONS_FIELDNAME_STANDARDIZEDNAME] == name});
+	var query = new esri.tasks.Query();
+	query.where = LOCATIONS_FIELDNAME_STANDARDIZEDNAME + " = '" + name+"'";
+	query.returnGeometry = false;
+	query.outFields = ["*"];
+	
+	var queryTask = new esri.tasks.QueryTask(FEATURE_SERVICE_URL);
+	queryTask.execute(query, function(result){
+		var recs = [];
+		$.each(result.features, function(index, value){recs.push(value.attributes)});
+		callBack(recs);
+	});
 }
 
 function moveGraphicToFront(graphic)
