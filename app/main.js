@@ -86,7 +86,13 @@ function init() {
 		});
 	}
 
-	_locations = [];
+	getLocations(function(locations){_locations = locations; finishInit()});
+	
+}
+
+function getLocations(callBack) 
+{
+	var locations = [];
 	var pt;
 	
 	$.ajax({
@@ -99,12 +105,12 @@ function init() {
 			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
 				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
 					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
-					_locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
+					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
 				}
 		  });
 		// sort unique locations in descending order of count
-		_locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
-		finishInit();		  
+		locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
+		callBack(locations);	
 	  }
 	});		
 }
