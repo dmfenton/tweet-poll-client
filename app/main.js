@@ -22,6 +22,8 @@ var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
 var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
 var SPREADSHEET_FIELDNAME_LYRICS = "Lyrics";
 
+var PARAMETER_STANDARDIZEDNAME = "standardizedName";
+
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
 var LEVEL = 4;
@@ -129,7 +131,7 @@ function finishInit() {
 	var starterName;
 	if (params != null) {
 		$.each(params,function(index,value){			
-			if (index.toLowerCase() == "standardizedname") {
+			if (index.toLowerCase() == PARAMETER_STANDARDIZEDNAME.toLowerCase()) {
 				starterName = value
 			}
 		});
