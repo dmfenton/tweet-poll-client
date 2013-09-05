@@ -24,6 +24,8 @@ var SPREADSHEET_FIELDNAME_LYRICS = "Lyrics";
 
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
+var SYMBOL_BASE_SIZE = 5;
+
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
 var LEVEL = 4;
@@ -140,7 +142,7 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(10*graphic.attributes[LOCATIONS_FIELDNAME_COUNT]+3,0.35));
+		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes[LOCATIONS_FIELDNAME_COUNT]+3,0.35));
 		$("#hoverInfo").html(graphic.attributes[LOCATIONS_FIELDNAME_SHORTNAME]);
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
@@ -153,7 +155,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(10*graphic.attributes[LOCATIONS_FIELDNAME_COUNT],0.25));
+	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes[LOCATIONS_FIELDNAME_COUNT],0.25));
 }
 
 
@@ -262,7 +264,7 @@ function getLocations(callBack)
 			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
 				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
 					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
-					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*10,0.25), value.attributes));
+					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*SYMBOL_BASE_SIZE,0.25), value.attributes));
 				}
 		  });
 		// sort unique locations in descending order of count
