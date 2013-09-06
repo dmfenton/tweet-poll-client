@@ -261,6 +261,15 @@ function handleWindowResize() {
 	$("#info").css("max-height", $("#map").height()-100);
 }
 
+function createSymbol(size, opacity)
+{
+	return new esri.symbol.SimpleMarkerSymbol(
+				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
+				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
+				new dojo.Color([0,0,233,opacity])
+			);	
+}
+
 function getLocations(callBack) 
 {
 	var locations = [];
@@ -289,14 +298,5 @@ function getLocations(callBack)
 		callBack(locations);	
 	  }
 	});		
-}
-
-function createSymbol(size, opacity)
-{
-	return new esri.symbol.SimpleMarkerSymbol(
-				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
-				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
-				new dojo.Color([0,0,233,opacity])
-			);	
 }
 
