@@ -12,7 +12,7 @@ var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Can
 
 var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0";
 
-var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
+var SPREADHSEET_FIELDNAME_PLACENAME = "Place_name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
 var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
 var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
@@ -197,11 +197,19 @@ function postSelection()
 
 	queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$("#info").empty();
+		var lyrics;
+		var casualName;
 		$.each(recs, function(index, value) {
+			lyrics = value[SPREADSHEET_FIELDNAME_LYRICS];
+			casualName = value[SPREADHSEET_FIELDNAME_PLACENAME];
+			// does casualName have a comma?  if so, get what's before the comma			
+			if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
+			casualName = $.trim(casualName);
+			lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
 			$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
 			$("#info").append("<br>");
 			$("#info").append("<br>");
-			$("#info").append(value[SPREADSHEET_FIELDNAME_LYRICS]);
+			$("#info").append(lyrics);
 			$("#info").append("<br>");
 			$("#info").append("<br>");
 			$("#info").append("<br>");
