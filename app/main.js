@@ -114,7 +114,7 @@ function finishInit() {
 	}
 	if (starterName) {
 		_selected = $.grep(_locations, function(n, i) {
-			return n.attributes.standardizedName == starterName;
+			return n.attributes.getStandardizedName() == starterName;
 		})[0];
 		postSelection();
 		_map.centerAndZoom(_selected.geometry, 5);
