@@ -229,12 +229,6 @@ function queryRecsByCity(name,callBack)
 	});
 }
 
-function moveGraphicToFront(graphic)
-{
-	var dojoShape = graphic.getDojoShape();
-	if (dojoShape) dojoShape.moveToFront();
-}
-
 function hoverInfoPos(x,y){
 	if (x <= ($("#map").width())-230){
 		$("#hoverInfo").css("left",(x-($("#hoverInfo").width()/2))-5);
