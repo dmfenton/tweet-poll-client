@@ -144,8 +144,8 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes[LOCATIONS_FIELDNAME_COUNT]+3,0.35));
-		$("#hoverInfo").html(graphic.attributes[LOCATIONS_FIELDNAME_SHORTNAME]);
+		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, 0.35));
+		$("#hoverInfo").html(graphic.attributes.getShortName());
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
 	}
@@ -157,7 +157,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes[LOCATIONS_FIELDNAME_COUNT],0.25));
+	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), 0.25));
 }
 
 
@@ -175,7 +175,7 @@ function deselect()
 	$("#info").slideUp();
 	$("#map").multiTips({
 		pointArray : [],
-		attributeLabelField: "name",
+		labelValue: "",
 		mapVariable : _map,
 		labelDirection : "top",
 		backgroundColor : "#000000",
@@ -188,7 +188,7 @@ function postSelection()
 {
 	$("#map").multiTips({
 		pointArray : [_selected],
-		attributeLabelField: LOCATIONS_FIELDNAME_SHORTNAME,
+		labelValue: _selected.attributes.getShortName(),
 		mapVariable : _map,
 		labelDirection : "top",
 		backgroundColor : "#000000",
@@ -196,7 +196,7 @@ function postSelection()
 		pointerColor: "#000000"
 	});		
 
-	queryRecsByCity(_selected.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME], function(recs){
+	queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$("#info").empty();
 		$.each(recs, function(index, value) {
 			$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
@@ -265,6 +265,7 @@ function getLocations(callBack)
 {
 	var locations = [];
 	var pt;
+	var att;
 	
 	$.ajax({
 	  type: 'GET',
@@ -273,14 +274,18 @@ function getLocations(callBack)
 	  cache: false,
 	  success: function(text) {
 		  $.each(text.features, function(index, value) {
-			    value.attributes[LOCATIONS_FIELDNAME_SHORTNAME] = value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0];
+			    att = new LocationRec(
+					value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0],
+					value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME],
+					value.attributes[LOCATIONS_FIELDNAME_COUNT]
+				);
 				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
 					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
-					locations.push(new esri.Graphic(pt, createSymbol(value.attributes[LOCATIONS_FIELDNAME_COUNT]*SYMBOL_BASE_SIZE,0.25), value.attributes));
+					locations.push(new esri.Graphic(pt, createSymbol(att.getCount()*SYMBOL_BASE_SIZE,0.25), att));
 				}
 		  });
 		// sort unique locations in descending order of count
-		locations.sort(function(a,b){return b.attributes[LOCATIONS_FIELDNAME_COUNT] - a.attributes[LOCATIONS_FIELDNAME_COUNT]});
+		locations.sort(function(a,b){return b.attributes.getCount() - a.attributes.getCount()});
 		callBack(locations);	
 	  }
 	});		

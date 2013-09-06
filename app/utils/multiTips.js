@@ -31,7 +31,7 @@
 		settings = $.extend({
 			'pointArray' : [],
 			'mapVariable' : null,
-			'attributeLabelField' : "",
+			'labelValue' : "",
 			'zoomToPoints' : false,
 			"backgroundColor" : "#000000",
 			"pointerColor" : "#000000",
@@ -105,7 +105,7 @@
 			
 		$.each(settings.pointArray,function(i,pt){
 			mapDiv.append("<div id='arrow"+i+"' class='mtArrow'></div>").append("<div id='multiTip"+i+"' class='multiTip'></div>");
-			$('#multiTip'+i).html(pt.attributes[settings.attributeLabelField]);
+			$('#multiTip'+i).html(settings.labelValue);
 			$('#multiTip'+i).css("background-color",settings.backgroundColor);
 			$('#multiTip'+i).css("color",settings.textColor);
 			$('#multiTip'+i).css("white-space","nowrap");
