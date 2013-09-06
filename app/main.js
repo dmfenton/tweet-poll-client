@@ -12,17 +12,16 @@ var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Can
 
 var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0";
 
-var LOCATIONS_FIELDNAME_X = "X";
-var LOCATIONS_FIELDNAME_Y = "Y";
-var LOCATIONS_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
-var LOCATIONS_FIELDNAME_COUNT = "Count";
-var LOCATIONS_FIELDNAME_SHORTNAME = "Short_name";
-
 var SPREADHSEET_FIELDNAME_PLACENAME = "Place name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
 var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
 var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
 var SPREADSHEET_FIELDNAME_LYRICS = "Lyrics";
+var SPREADSHEET_FIELDNAME_X = "X";
+var SPREADSHEET_FIELDNAME_Y = "Y";
+var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
+
+var ADDITIONAL_FIELDNAME_COUNT = "Count";
 
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
@@ -217,7 +216,7 @@ function postSelection()
 function queryRecsByCity(name,callBack)
 {
 	var query = new esri.tasks.Query();
-	query.where = LOCATIONS_FIELDNAME_STANDARDIZEDNAME + " = '" + name+"'";
+	query.where = SPREADSHEET_FIELDNAME_STANDARDIZEDNAME + " = '" + name+"'";
 	query.returnGeometry = false;
 	query.outFields = ["*"];
 	
@@ -278,12 +277,12 @@ function getLocations(callBack)
 	  success: function(text) {
 		  $.each(text.features, function(index, value) {
 			    att = new LocationRec(
-					value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME].split(",")[0],
-					value.attributes[LOCATIONS_FIELDNAME_STANDARDIZEDNAME],
-					value.attributes[LOCATIONS_FIELDNAME_COUNT]
+					value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME].split(",")[0],
+					value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],
+					value.attributes[ADDITIONAL_FIELDNAME_COUNT]
 				);
-				if ($.trim(value.attributes[LOCATIONS_FIELDNAME_X]) != "") {
-					pt = new esri.geometry.Point(value.attributes[LOCATIONS_FIELDNAME_X], value.attributes[LOCATIONS_FIELDNAME_Y]);
+				if ($.trim(value.attributes[SPREADSHEET_FIELDNAME_X]) != "") {
+					pt = new esri.geometry.Point(value.attributes[SPREADSHEET_FIELDNAME_X], value.attributes[SPREADSHEET_FIELDNAME_Y]);
 					locations.push(new esri.Graphic(pt, createSymbol(att.getCount()*SYMBOL_BASE_SIZE,0.25), att));
 				}
 		  });
