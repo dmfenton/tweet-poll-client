@@ -10,8 +10,6 @@ dojo.require("esri.map");
 var TITLE = "Lyrical Locations"
 var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
-var ADDITIONAL_FIELDNAME_COUNT = "Count";
-
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
 var SYMBOL_BASE_SIZE = 5;
@@ -46,7 +44,7 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
-	_service = new AGOLService();
+	_service = new GoogleService();
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 	

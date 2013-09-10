@@ -11,6 +11,8 @@ function AGOLService()
 	var SPREADSHEET_FIELDNAME_X = "X";
 	var SPREADSHEET_FIELDNAME_Y = "Y";
 	var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
+	
+	var ADDITIONAL_FIELDNAME_COUNT = "Count";
 		
 	this.getLocations = function(callBack) 
 	{
