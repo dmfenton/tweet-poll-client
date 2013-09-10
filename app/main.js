@@ -12,7 +12,7 @@ var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Can
 
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
-var SYMBOL_BASE_SIZE = 5;
+var SYMBOL_BASE_SIZE = 7;
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
