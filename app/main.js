@@ -12,7 +12,7 @@ var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Can
 
 var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0";
 
-var SPREADHSEET_FIELDNAME_PLACENAME = "Place_name";
+var SPREADSHEET_FIELDNAME_PLACENAME = "Place_name";
 var SPREADSHEET_FIELDNAME_SONG = "Song";
 var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
 var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
@@ -200,13 +200,13 @@ function postSelection()
 		var lyrics;
 		var casualName;
 		$.each(recs, function(index, value) {
-			lyrics = value[SPREADSHEET_FIELDNAME_LYRICS];
-			casualName = value[SPREADHSEET_FIELDNAME_PLACENAME];
+			lyrics = value.getLyrics();
+			casualName = value.getPlaceName();
 			// does casualName have a comma?  if so, get what's before the comma			
 			if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
 			casualName = $.trim(casualName);
 			lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
-			$("#info").append("<b>"+value[SPREADSHEET_FIELDNAME_ARTIST]+"</b>, <i>"+value[SPREADSHEET_FIELDNAME_SONG]+"</i>");
+			$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
 			$("#info").append("<br>");
 			$("#info").append("<br>");
 			$("#info").append(lyrics);
@@ -214,6 +214,7 @@ function postSelection()
 			$("#info").append("<br>");
 			$("#info").append("<br>");
 		});
+		
 		$("#info").slideDown();
 		// make sure point doesn't occupy right-most 400px of map.
 		if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
@@ -223,6 +224,7 @@ function postSelection()
 
 function queryRecsByCity(name,callBack)
 {
+	
 	var query = new esri.tasks.Query();
 	query.where = SPREADSHEET_FIELDNAME_STANDARDIZEDNAME + " = '" + name+"'";
 	query.returnGeometry = false;
@@ -231,9 +233,20 @@ function queryRecsByCity(name,callBack)
 	var queryTask = new esri.tasks.QueryTask(FEATURE_SERVICE_URL);
 	queryTask.execute(query, function(result){
 		var recs = [];
-		$.each(result.features, function(index, value){recs.push(value.attributes)});
+		$.each(result.features, function(index, value){
+			recs.push(new TableRec(
+				value.attributes[SPREADSHEET_FIELDNAME_PLACENAME],
+				value.attributes[SPREADSHEET_FIELDNAME_SONG],
+				value.attributes[SPREADSHEET_FIELDNAME_ARTIST],
+				value.attributes[SPREADSHEET_FIELDNAME_LYRICS],
+				value.attributes[SPREADSHEET_FIELDNAME_X],
+				value.attributes[SPREADSHEET_FIELDNAME_Y],
+				value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME]
+			));
+		});
 		callBack(recs);
 	});
+
 }
 
 function hoverInfoPos(x,y){
