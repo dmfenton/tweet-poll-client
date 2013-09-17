@@ -187,29 +187,33 @@ function postSelection()
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$("#info").empty();
-		var lyrics;
-		var casualName;
-		$.each(recs, function(index, value) {
-			lyrics = value.getLyrics();
-			casualName = value.getPlaceName();
-			// does casualName have a comma?  if so, get what's before the comma			
-			if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
-			casualName = $.trim(casualName);
-			lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
-			$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
-			$("#info").append("<br>");
-			$("#info").append("<br>");
-			$("#info").append(lyrics);
-			$("#info").append("<br>");
-			$("#info").append("<br>");
-			$("#info").append("<br>");
-		});
-		
+		writeTable(recs);		
 		$("#info").slideDown();
 		// make sure point doesn't occupy right-most 400px of map.
 		if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
 			_map.centerAt(_selected.geometry);
 	});	
+}
+
+function writeTable(recs)
+{
+	var lyrics;
+	var casualName;
+	$.each(recs, function(index, value) {
+		lyrics = value.getLyrics();
+		casualName = value.getPlaceName();
+		// does casualName have a comma?  if so, get what's before the comma			
+		if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
+		casualName = $.trim(casualName);
+		lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
+		$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append(lyrics);
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+	});
 }
 
 function hoverInfoPos(x,y){
