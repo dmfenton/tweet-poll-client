@@ -1,6 +1,6 @@
-function TableRec(placeName, song, artist, lyrics, x, y, standardizedName) 
+function TableRec(placeName, song, artist, lyrics) 
 {
-	console.log(placeName, song, artist, lyrics, x, y, standardizedName);
+
 	this.getPlaceName = function() {
 		return placeName;
 	}
