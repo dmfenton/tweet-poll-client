@@ -13,6 +13,7 @@ var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Can
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
 var SYMBOL_BASE_SIZE = 7;
+var SYMBOL_COLOR = {r:0,g:0,b:233};
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
@@ -241,7 +242,7 @@ function createSymbol(size, opacity)
 {
 	return new esri.symbol.SimpleMarkerSymbol(
 				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
-				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,233]), 2),
-				new dojo.Color([0,0,233,opacity])
+				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b]), 2),
+				new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b, opacity])
 			);	
 }
