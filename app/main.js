@@ -156,12 +156,13 @@ function layerOV_onClick(event)
 	var graphic = event.graphic;
 	_selected = graphic;
 	postSelection();
+	flipToLyrics();
 }
 
 function deselect()
 {
 	_selected = null;
-	$("#info").slideUp();
+	flipToTable();
 	$("#map").multiTips({
 		pointArray : [],
 		labelValue: "",
@@ -186,9 +187,12 @@ function postSelection()
 	});		
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
-		$("#info").empty();
+		$(".page2").empty();
 		writeTable(recs);		
-		$("#info").slideDown();
+		$(".page2").append("<a>Return to Table</a>");
+		$(".page2 a").click(function(e) {
+			flipToTable();
+        });
 		// make sure point doesn't occupy right-most 400px of map.
 		if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
 			_map.centerAt(_selected.geometry);
@@ -206,14 +210,26 @@ function writeTable(recs)
 		if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
 		casualName = $.trim(casualName);
 		lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
-		$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-		$("#info").append(lyrics);
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-		$("#info").append("<br>");
+		$(".page2").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
+		$(".page2").append("<br>");
+		$(".page2").append("<br>");
+		$(".page2").append(lyrics);
+		$(".page2").append("<br>");
+		$(".page2").append("<br>");
+		$(".page2").append("<br>");
 	});
+}
+
+function flipToTable()
+{
+	$(".page2").removeClass('flip in').addClass('flip out').hide();
+	$(".page1").removeClass('flip out').addClass('flip in').show();	
+}
+
+function flipToLyrics()
+{
+	$(".page1").removeClass('flip in').addClass('flip out').hide();
+	$(".page2").removeClass('flip out').addClass('flip in').show();	
 }
 
 function hoverInfoPos(x,y){
@@ -239,7 +255,7 @@ function handleWindowResize() {
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
-	$("#info").css("max-height", $("#map").height()-100);
+	$(".page2").css("max-height", $("#map").height()-100);
 }
 
 function createSymbol(size, opacity)
