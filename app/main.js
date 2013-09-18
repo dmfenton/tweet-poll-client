@@ -188,7 +188,7 @@ function postSelection()
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$(".page2").empty();
-		writeTable(recs);		
+		writeLyrics(recs);		
 		$(".page2").append("<a>Return to Table</a>");
 		$(".page2 a").click(function(e) {
 			flipToTable();
@@ -199,7 +199,7 @@ function postSelection()
 	});	
 }
 
-function writeTable(recs)
+function writeLyrics(recs)
 {
 	var lyrics;
 	var casualName;
