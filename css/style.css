@@ -170,7 +170,6 @@ a:hover{
     background: white;
     position: relative;
 	overflow:auto;
-	padding:10px;
 	border:solid;
 	border-width:thin;	
 }
@@ -184,6 +183,27 @@ a:hover{
 	padding:10px;
 	border:solid;
 	border-width:thin;	
+}
+
+.page1 li {
+	background-color:#F6F4F0;
+	padding:5px;	
+	border: 1px solid #e5e5e5;
+	margin-top: 1px;
+	border-radius: 2px;	
+	cursor:pointer;
+}
+
+.page1 li:hover {
+	background-color:white;
+}
+
+.page1 .selected {
+	font-weight:bold;
+}
+
+.page1 .hiddenData {
+	display:none;
 }
 
 .flip {

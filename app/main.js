@@ -92,6 +92,8 @@ function finishInit() {
 		_map.graphics.add(value);
 	});
 	
+	writeTable();
+	
 	var params = esri.urlToObject(document.location.href).query;
 	var starterName;
 	if (params != null) {
@@ -159,10 +161,21 @@ function layerOV_onClick(event)
 	flipToLyrics();
 }
 
+function tableRec_onClick(event)
+{
+	deselect();
+	$(this).addClass("selected");
+	var standardizedName = $(this).find(".hiddenData").html();
+	_selected = $.grep(_locations, function(n, i){return n.attributes.getStandardizedName() == standardizedName})[0];
+	postSelection();
+	flipToLyrics();
+}
+
 function deselect()
 {
 	_selected = null;
-	flipToTable();
+	$(".page1 li").removeClass("selected");
+	if ($('.page2').is(':visible')) flipToTable();
 	$("#map").multiTips({
 		pointArray : [],
 		labelValue: "",
@@ -220,6 +233,28 @@ function writeLyrics(recs)
 	});
 }
 
+function writeTable()
+{
+	var list = [];
+	$.each(_locations, function(index, value){
+		list.push({name: value.attributes.getShortName(), standardizedName: value.attributes.getStandardizedName()});
+	});
+	list.sort(function(a,b){
+		if (a.name < b.name) return -1;
+		if (a.name > b.name) return 1;
+		return 0;
+	});
+	$(".page1").empty();
+	var ul = $("<ul></ul>");
+	var li;
+	$.each(list, function(index, value){
+		li = "<li>"+value.name+"<div class='hiddenData'>"+value.standardizedName+"</div></li>";
+		$(ul).append(li);
+	});
+	$(".page1").append(ul);
+	$(".page1 li").click(tableRec_onClick);
+}
+
 function flipToTable()
 {
 	$(".page2").removeClass('flip in').addClass('flip out').hide();
@@ -255,6 +290,7 @@ function handleWindowResize() {
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
+	$(".page1").css("max-height", $("#map").height()-100);
 	$(".page2").css("max-height", $("#map").height()-100);
 }
 
