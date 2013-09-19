@@ -159,6 +159,7 @@ function layerOV_onClick(event)
 	_selected = graphic;
 	postSelection();
 	flipToLyrics();
+	adjustExtent();
 }
 
 function tableRec_onClick(event)
@@ -169,6 +170,14 @@ function tableRec_onClick(event)
 	_selected = $.grep(_locations, function(n, i){return n.attributes.getStandardizedName() == standardizedName})[0];
 	postSelection();
 	flipToLyrics();
+	adjustExtent();
+}
+
+function adjustExtent()
+{
+	// make sure point doesn't occupy right-most 400px of map.
+	if ((_map.toScreen(_selected.geometry).x > ($("#map").width() - 400)) || (!_map.extent.expand(0.75).contains(_selected.geometry))) 
+		_map.centerAt(_selected.geometry);
 }
 
 function deselect()
@@ -206,9 +215,6 @@ function postSelection()
 		$(".page2 a").click(function(e) {
 			flipToTable();
         });
-		// make sure point doesn't occupy right-most 400px of map.
-		if (_map.toScreen(_selected.geometry).x > ($("#map").width() - 400))
-			_map.centerAt(_selected.geometry);
 	});	
 }
 
