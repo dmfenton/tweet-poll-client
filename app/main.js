@@ -45,6 +45,8 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
+	$(document).keydown(onKeyDown);
+	
 	_service = new GoogleService();
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
@@ -130,6 +132,19 @@ function finishInit() {
 	
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
+	
+}
+
+
+function onKeyDown(e)
+{
+
+	if (e.keyCode == 27) {
+		if (_selected) {
+			deselect();
+			flipToTable();
+		}
+	}
 	
 }
 
