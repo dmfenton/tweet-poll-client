@@ -88,6 +88,10 @@ function finishInit() {
 	if (!_locations) return false;	
 	if (!_map.loaded) return false;
 	
+	$("#listIcon").click(function(e) {
+        flipToTable();
+    });
+	
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
 	});
@@ -209,12 +213,8 @@ function postSelection()
 	});		
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
-		$(".page2").empty();
+		$("#info").empty();
 		writeLyrics(recs);		
-		$(".page2").append("<a>Return to Table</a>");
-		$(".page2 a").click(function(e) {
-			flipToTable();
-        });
 	});	
 }
 
@@ -229,13 +229,13 @@ function writeLyrics(recs)
 		if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
 		casualName = $.trim(casualName);
 		lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
-		$(".page2").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
-		$(".page2").append("<br>");
-		$(".page2").append("<br>");
-		$(".page2").append(lyrics);
-		$(".page2").append("<br>");
-		$(".page2").append("<br>");
-		$(".page2").append("<br>");
+		$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append(lyrics);
+		$("#info").append("<br>");
+		$("#info").append("<br>");
+		$("#info").append("<br>");
 	});
 }
 

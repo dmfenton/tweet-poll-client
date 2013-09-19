@@ -185,6 +185,11 @@ a:hover{
 	border-width:thin;	
 }
 
+#listIcon {
+	float:right;
+	cursor:pointer;
+}
+
 .page1 li {
 	background-color:#F6F4F0;
 	padding:5px;	
