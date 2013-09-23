@@ -47,7 +47,7 @@ function init() {
 	
 	$(document).keydown(onKeyDown);
 	
-	_service = new GoogleService();
+	_service = new HerokuService();
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 	
