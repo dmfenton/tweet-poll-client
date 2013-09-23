@@ -2,7 +2,7 @@ function GoogleService()
 {
 	
 	var SPREADSHEET_URL = "https://docs.google.com/spreadsheet/pub?key=0ApQt3h4b9AptdHdvUDd4NnRVOEhpcExwQldNN3BlZHc&output=csv";
-	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? "http://storymaps.esri.com/proxy/proxy.ashx" : "http://localhost/proxy/proxy.ashx";
+	//var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? "http://storymaps.esri.com/proxy/proxy.ashx" : "http://localhost/proxy/proxy.ashx";
 
 	var SPREADSHEET_FIELDNAME_PLACENAME = "Place name";
 	var SPREADSHEET_FIELDNAME_SONG = "Song";
@@ -13,7 +13,7 @@ function GoogleService()
 	var SPREADSHEET_FIELDNAME_Y = "Y";
 	var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized Name";
 	
-	esri.config.defaults.io.proxyUrl = PROXY_URL;
+	//esri.config.defaults.io.proxyUrl = PROXY_URL;
 	
 	var _recsSpreadSheet;
 	
