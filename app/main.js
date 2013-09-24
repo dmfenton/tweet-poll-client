@@ -7,7 +7,7 @@ dojo.require("esri.map");
 ***************** begin config section ****************
 *******************************************************/
 
-var TITLE = "Lyrical Locations"
+var TITLE = "#WhereToLive"
 var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
 
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
@@ -91,6 +91,7 @@ function finishInit() {
 	if (!_map.loaded) return false;
 	
 	$("#listIcon").click(function(e) {
+		deselect();
         flipToTable();
     });
 	
@@ -133,8 +134,24 @@ function finishInit() {
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
 	
+	setTimeout(refreshLocations, 3000);
+	
 }
 
+function refreshLocations()
+{
+	console.log('test');
+	_service.getLocations(function(locations){
+		_map.graphics.clear();
+		_locations = locations; 
+		$.each(_locations, function(index, value) {
+			_map.graphics.add(value);
+		});
+		writeTable();
+		setTimeout(refreshLocations, 3000);
+	});
+	
+}
 
 function onKeyDown(e)
 {
@@ -235,6 +252,11 @@ function postSelection()
 
 function writeLyrics(recs)
 {
+	$("#info").append("<b>"+_selected.attributes.getShortName()+"</b>");
+	$("#info").append("<br>");
+	$("#info").append("<br>");
+	$("#info").append("Here's where you would see the individual tweets for this location.");	
+	/*
 	var lyrics;
 	var casualName;
 	$.each(recs, function(index, value) {
@@ -252,6 +274,7 @@ function writeLyrics(recs)
 		$("#info").append("<br>");
 		$("#info").append("<br>");
 	});
+	*/
 }
 
 function writeTable()
