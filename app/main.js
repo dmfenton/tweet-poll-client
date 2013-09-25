@@ -18,6 +18,7 @@ var SYMBOL_COLOR = {r:0,g:0,b:233};
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
 var LEVEL = 4;
+var REFRESH_RATE = 3000;
 
 /******************************************************
 ***************** end config section ******************
@@ -134,7 +135,7 @@ function finishInit() {
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
 	
-	setTimeout(refreshLocations, 3000);
+	if (REFRESH_RATE > 0) setTimeout(refreshLocations, REFRESH_RATE);
 	
 }
 
@@ -147,7 +148,7 @@ function refreshLocations()
 			_map.graphics.add(value);
 		});
 		writeTable();
-		setTimeout(refreshLocations, 3000);
+		setTimeout(refreshLocations, REFRESH_RATE);
 	});
 	
 }
