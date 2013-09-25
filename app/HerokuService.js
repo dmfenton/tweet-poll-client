@@ -30,7 +30,14 @@ function HerokuService()
 	
 	this.queryRecsByCity = function(name, callBack)
 	{
-		callBack([]);
+		$.ajax({
+			type: 'GET',
+			url: SERVICE_URL+"/location/"+name,
+			cache: true,
+			success: function(result) {
+				callBack(result);
+			}
+		});			
 	}
 	
 }

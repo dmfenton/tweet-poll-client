@@ -255,26 +255,11 @@ function writeLyrics(recs)
 	$("#info").append("<b>"+_selected.attributes.getShortName()+"</b>");
 	$("#info").append("<br>");
 	$("#info").append("<br>");
-	$("#info").append("Here's where you would see the individual tweets for this location.");	
-	/*
-	var lyrics;
-	var casualName;
 	$.each(recs, function(index, value) {
-		lyrics = value.getLyrics();
-		casualName = value.getPlaceName();
-		// does casualName have a comma?  if so, get what's before the comma			
-		if (casualName.indexOf(",") > -1) casualName = casualName.split(",")[0];
-		casualName = $.trim(casualName);
-		lyrics = lyrics.replace(casualName, "<b>"+casualName+"</b>");
-		$("#info").append("<b>"+value.getArtist()+"</b>, <i>"+value.getSong()+"</i>");
-		$("#info").append("<br>");
-		$("#info").append("<br>");
-		$("#info").append(lyrics);
-		$("#info").append("<br>");
+		$("#info").append("<b>"+value.place+"</b>, <i>"+value.user+"</i>");
 		$("#info").append("<br>");
 		$("#info").append("<br>");
 	});
-	*/
 }
 
 function writeTable()
