@@ -140,7 +140,6 @@ function finishInit() {
 
 function refreshLocations()
 {
-	console.log('test');
 	_service.getLocations(function(locations){
 		_map.graphics.clear();
 		_locations = locations; 
@@ -194,7 +193,6 @@ function layerOV_onClick(event)
 	var graphic = event.graphic;
 	_selected = graphic;
 	postSelection();
-	flipToLyrics();
 	adjustExtent();
 }
 
@@ -205,7 +203,6 @@ function tableRec_onClick(event)
 	var standardizedName = $(this).find(".hiddenData").html();
 	_selected = $.grep(_locations, function(n, i){return n.attributes.getStandardizedName() == standardizedName})[0];
 	postSelection();
-	flipToLyrics();
 	adjustExtent();
 }
 
@@ -247,6 +244,7 @@ function postSelection()
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$("#info").empty();
 		writeLyrics(recs);		
+		flipToLyrics();
 	});	
 }
 
