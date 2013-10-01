@@ -255,7 +255,7 @@ function writeLyrics(recs)
 	$("#info").append("<br>");
 	$("#info").append("<br>");
 	$.each(recs, function(index, value) {
-		$("#info").append("<b>"+value.place+"</b>, <i>"+value.user+"</i>");
+		$("#info").append("<i>"+value.user+"</i>");
 		$("#info").append("<br>");
 		$("#info").append("<br>");
 	});
