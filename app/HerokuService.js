@@ -19,7 +19,7 @@ function HerokuService()
 				$.each(result, function(index, value) {
 					sym = createSymbol(value.count*SYMBOL_BASE_SIZE,0.25);
 					pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
-					atts = new LocationRec(value.standardized_name, value.standardized_name, value.count);
+					atts = new LocationRec(value.short_name, value.standardized_name, value.count);
 					arr.push(new esri.Graphic(pt, sym, atts));
 				});
 				callBack(arr);
