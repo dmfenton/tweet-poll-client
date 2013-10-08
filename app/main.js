@@ -8,12 +8,12 @@ dojo.require("esri.map");
 *******************************************************/
 
 var TITLE = "#WhereToLive"
-var BASEMAP_SERVICE = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";
+var BASEMAP_SERVICE = "http://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/DGCM_2Msmaller_BASE/MapServer";
 
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
 var SYMBOL_BASE_SIZE = 7;
-var SYMBOL_COLOR = {r:0,g:0,b:233};
+var SYMBOL_COLOR = {r:255,g:0,b:0};
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
@@ -224,9 +224,9 @@ function deselect()
 		labelValue: "",
 		mapVariable : _map,
 		labelDirection : "top",
-		backgroundColor : "#000000",
-		textColor : "#FFFFFF",
-		pointerColor: "#000000"
+		backgroundColor : "#FFFFFF",
+		textColor : "#000000",
+		pointerColor: "#FFFFFF"
 	});		
 }
 
@@ -237,9 +237,9 @@ function postSelection()
 		labelValue: _selected.attributes.getShortName(),
 		mapVariable : _map,
 		labelDirection : "top",
-		backgroundColor : "#000000",
-		textColor : "#FFFFFF",
-		pointerColor: "#000000"
+		backgroundColor : "#FFFFFF",
+		textColor : "#000000",
+		pointerColor: "#FFFFFF"
 	});		
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
@@ -255,7 +255,7 @@ function writeLyrics(recs)
 	$("#info").append("<br>");
 	$("#info").append("<br>");
 	$.each(recs, function(index, value) {
-		$("#info").append("<i>"+value.user+"</i>");
+		$("#info").append("<i>"+value.user+"</i>:<br><br>"+value.text);
 		$("#info").append("<br>");
 		$("#info").append("<br>");
 	});
