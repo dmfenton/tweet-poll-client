@@ -111,7 +111,7 @@
 			$('#multiTip'+i).css("white-space","nowrap");
 			$('#multiTip'+i).css("padding","5px");
 			$('#multiTip'+i).css("position","absolute");
-			$('#multiTip'+i).css("z-index","1000");			
+			$('#multiTip'+i).css("z-index","100");			
 			$("#arrow"+i).css("position","absolute");
 			$("#arrow"+i).css("width","0");
 			$("#arrow"+i).css("height","0");			
