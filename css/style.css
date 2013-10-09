@@ -15,8 +15,10 @@
  | limitations under the License.
  */
 html,body,div,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,fieldset,input,hr {margin:0; padding:0;}
-html,body{height:100%;width:100%;overflow:hidden; font-family:Georgia, "Times New Roman", Times, serif; color:#444;}
+html,body{height:100%;width:100%;overflow:hidden; font-family:Verdana, Geneva, sans-serif; color:#444;}
+/*
 h1,h2,h3,h4,h5,h6,pre,code,address,caption,cite,code,em,th {font-weight:normal; font-style:normal; font-family:Arial, Helvetica, sans-serif; color:#fff;}
+*/
 ul,ol {list-style:none;}
 fieldset,img,hr {border:none; outline:none;}
 caption,th {text-align:left;}
@@ -30,9 +32,7 @@ html,body {
 
 body {
 	background-color:#fff;
-	color:#333;
 	font-size:14px;
-	overflow:hidden;
 }
 
 .claro .dijitContentPane {
@@ -154,6 +154,24 @@ a:hover{
 	cursor:pointer;
 }
 
+#instructions {
+	width:200px;
+	font-size:26px;
+	font-weight:normal;
+    background-image:url(../resources/images/background_filler3.png);
+	border-bottom-left-radius:20px;
+	border-bottom-right-radius:20px;
+	border-top-left-radius:20px;
+	border-top-right-radius:20px;
+    position: absolute;
+	z-index:111;
+	overflow:auto;
+	padding:20px;
+	color:white;
+	left:70px;
+	top:20px;
+	cursor:default;
+}
 
 .holder {
 	z-index:110;
@@ -166,23 +184,29 @@ a:hover{
 }
 
 .page1 {
-    width: 280px;
-    background: white;
+    width: 240px;
+    background-image:url(../resources/images/background_filler3.png);
+	border-bottom-left-radius:20px;
+	border-bottom-right-radius:20px;
+	border-top-left-radius:20px;
+	border-top-right-radius:20px;
     position: relative;
 	overflow:auto;
-	border:solid;
-	border-width:thin;	
+	padding:20px;
 }
 
 .page2 {
-    width: 280px;
-    background: white;
+    width: 240px;
+    background-image:url(../resources/images/background_filler3.png);
+	border-bottom-left-radius:20px;
+	border-bottom-right-radius:20px;
+	border-top-left-radius:20px;
+	border-top-right-radius:20px;
     position: relative;
     display: none;
 	overflow:auto;
-	padding:10px;
-	border:solid;
-	border-width:thin;	
+	padding:20px;
+	color:white;
 }
 
 #listIcon {
@@ -191,20 +215,20 @@ a:hover{
 }
 
 .page1 li {
-	background-color:#F6F4F0;
+	color:#E8E8E8;
 	padding:5px;	
-	border: 1px solid #e5e5e5;
 	margin-top: 1px;
 	border-radius: 2px;	
 	cursor:pointer;
+	font-size:18px;
 }
 
 .page1 li:hover {
-	background-color:white;
+	color:white;
 }
 
 .page1 .selected {
-	font-weight:bold;
+	color:white;
 }
 
 .page1 .hiddenData {
