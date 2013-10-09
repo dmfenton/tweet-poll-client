@@ -114,15 +114,6 @@
 	    <h1 id="title"></h1>
 	    <h2 id="subtitle">If you could live anywhere on the planet, where would it be?<span style="font-size:22px;margin-left:20px"><a style="color:white;text-decoration:underline" href="https://twitter.com/intent/tweet?text=Where%20to%20Live&hashtags=WhereToLive&via=EsriStoryMaps&url=http://shar.es/Kf2RV&source=sharethiscom" target="_blank">Tweet us your answer</a>!</span></h2>
       </div>
-      <div id="logoArea">
-        <div id="social">
-        	<a id="msLink" href="http://storymaps.esri.com" target="_blank">A story map </a>
-            <span class='st_facebook' ></span>
-            <span class='st_twitter' st_via="EsriStoryMaps"></span>
-            <span class='st_sharethis'></span>
-        </div>
-        <div id="logo"><a id="logoLink" href="http://www.esri.com" target="_blank"><img id="logoImg" src="resources/images/esriGlobeLogow.png" alt="Esri - Home"></a></div>
-      </div>
     </div>
     -->
     <div id="map" dojotype="dijit.layout.ContentPane">
@@ -133,12 +124,29 @@
         </div><!--?zoomToggle-->
         <div id="hoverInfo"></div>
         <div id="instructions">
-        If you could live anywhere on the planet, where would it be?<br /><br />#WhereToLive<br /><br />
-<a style="color:white;text-decoration:underline" href="https://twitter.com/intent/tweet?text=Your%20town%20here&hashtags=WhereToLive&via=EsriStoryMaps&url=http://shar.es/Kf2RV&source=sharethiscom" target="_blank">Tweet us your answer</a>        
+            If you could live anywhere on the planet, where would it be?
+            <br /><br />
+            <span style="color:#CCC">#WhereToLive</span>
+            <br /><br />
+            <div style="margin-left:-10px">
+                <img src="resources/images/twitter-bird-light.png" style="float:left"/>
+                <a href="https://twitter.com/intent/tweet?text=Your%20town%20here&hashtags=WhereToLive&via=EsriStoryMaps&url=http://shar.es/Kf2RV&source=sharethiscom" style="color:#76d0f3" target="_blank">Tweet us your answer!</a>         
+            </div>
         </div>
+        
+        <div id="logoArea" class="menu">
+            <div id="social">
+                <a id="msLink" href="http://storymaps.esri.com" target="_blank">A story map </a>
+                <span class='st_facebook' ></span>
+                <span class='st_twitter' st_via="EsriStoryMaps"></span>
+                <span class='st_sharethis'></span>
+            </div>
+            <div id="logo"><a id="logoLink" href="http://www.esri.com" target="_blank"><img id="logoImg" src="resources/images/esriGlobeLogow.png" alt="Esri - Home"></a></div>
+        </div>
+        
 		<div class="holder">
-		    <div class="page1"></div>
-		    <div class="page2">
+		    <div class="menu page1"></div>
+		    <div class="menu page2">
             	<div style="width:100%">
 	            	<img id="listIcon" src="resources/images/ListIcon.png"/>
                 </div>
