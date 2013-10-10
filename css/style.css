@@ -115,8 +115,8 @@ a:hover{
 	  
 #logoArea{
 	position:absolute;
-    width: 250px;
-	right:30px;
+    width: 280px;
+	right:20px;
 	z-index:103;
 }
 
@@ -148,7 +148,7 @@ a:hover{
 .holder {
 	z-index:110;
     position: absolute;   
-	right:20px;
+	right:40px;
 	top:80px;
     -webkit-perspective: 1000;
     -moz-perspective: 1000;
@@ -156,7 +156,7 @@ a:hover{
 }
 
 .page1 {
-    width: 250px;
+    width: 280px;
 	border-top-left-radius:20px;
 	border-top-right-radius:20px;
     position: relative;
@@ -164,7 +164,7 @@ a:hover{
 }
 
 .page2 {
-    width: 250px;
+    width: 280px;
 	border-top-left-radius:20px;
 	border-top-right-radius:20px;
     position: relative;

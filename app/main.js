@@ -251,21 +251,40 @@ function postSelection()
 
 function writeLyrics(recs)
 {
+	
+	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? 
+						"http://storymaps.esri.com/proxy/proxy.ashx" : 
+						"http://localhost/proxy/proxy.ashx";
+						
+	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
+	
+	$(".page2").css("overflow","hidden");
+	$("#info").hide();
 	$("#info").append("<b>"+_selected.attributes.getShortName()+"</b>");
 	$("#info").append("<br>");
 	$("#info").append("<br>");
+	var count = 0;
 	$.each(recs, function(index, value) {
 		$.ajax({
 			type: 'GET',
-			url: "http://localhost/proxy/proxy.ashx?https://api.twitter.com/1/statuses/oembed.json?id="+value.tweet_id,
+			url: SERVICE_URL+"?id="+value.tweet_id,
 			cache: true,
 			success: function(result) {
+				count++;
 				$("#info").append(result.html);
 				$("#info").append("<br>");
 				$("#info").append("<br>");
+				if (count == recs.length) {
+					$("#info").fadeIn(3000,"linear",function(){$(".page2").css("overflow","auto");});
+				}
+			}, 
+			error: function(event) {
+				count++;
+				if (count == recs.length) {
+					$("#info").fadeIn(3000,"linear",function(){$(".page2").css("overflow","auto");});				
+				}
 			}
 		});			
-		
 	});
 }
 
