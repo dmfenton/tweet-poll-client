@@ -255,9 +255,17 @@ function writeLyrics(recs)
 	$("#info").append("<br>");
 	$("#info").append("<br>");
 	$.each(recs, function(index, value) {
-		$("#info").append("<i>"+value.user+"</i>:<br><br>"+value.text);
-		$("#info").append("<br>");
-		$("#info").append("<br>");
+		$.ajax({
+			type: 'GET',
+			url: "http://localhost/proxy/proxy.ashx?https://api.twitter.com/1/statuses/oembed.json?id="+value.tweet_id,
+			cache: true,
+			success: function(result) {
+				$("#info").append(result.html);
+				$("#info").append("<br>");
+				$("#info").append("<br>");
+			}
+		});			
+		
 	});
 }
 
