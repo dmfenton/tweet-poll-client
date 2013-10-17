@@ -257,24 +257,28 @@ function postSelection()
 {
 	
 	if ($("#question").css("display") != "none") $("#question").slideUp();
+	$("#locationTitle").empty();
+	$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
 	
-	$("#map").multiTips({
-		pointArray : [_selected],
-		labelValue: _selected.attributes.getShortName(),
-		mapVariable : _map,
-		labelDirection : "top",
-		backgroundColor : "#FFFFFF",
-		textColor : "#000000",
-		pointerColor: "#FFFFFF"
-	});		
-
-	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
-		$("#info").empty();
-		$("#locationTitle").empty();
-		$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
-		writeLyrics(recs);		
-		flipToLyrics();
-	});	
+	$("#info").slideUp(null,null,function(){
+		$("#map").multiTips({
+			pointArray : [_selected],
+			labelValue: _selected.attributes.getShortName(),
+			mapVariable : _map,
+			labelDirection : "top",
+			backgroundColor : "#FFFFFF",
+			textColor : "#000000",
+			pointerColor: "#FFFFFF"
+		});		
+	
+		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
+	
+			$("#info").empty();
+			writeLyrics(recs);		
+			flipToLyrics();
+		});	
+	});
+	
 }
 
 function writeLyrics(recs)
@@ -286,7 +290,6 @@ function writeLyrics(recs)
 						
 	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
 	
-	$("#info").hide();
 	var count = 0;
 	$.each(recs, function(index, value) {
 		$.ajax({
@@ -299,13 +302,13 @@ function writeLyrics(recs)
 				$("#info").append("<br>");
 				$("#info").append("<br>");
 				if (count == recs.length) {
-					$("#info").fadeIn(3000,"linear",function(){});
+					$("#info").slideDown();
 				}
 			}, 
 			error: function(event) {
 				count++;
 				if (count == recs.length) {
-					$("#info").fadeIn(3000,"linear",function(){});
+					$("#info").slideDown();
 				}
 			}
 		});			
