@@ -255,6 +255,9 @@ function deselect()
 
 function postSelection()
 {
+	
+	if ($("#question").css("display") != "none") $("#question").slideUp();
+	
 	$("#map").multiTips({
 		pointArray : [_selected],
 		labelValue: _selected.attributes.getShortName(),
