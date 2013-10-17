@@ -95,7 +95,7 @@ function finishInit() {
 		deselect();
         flipToTable();
     });
-	
+	_map.graphics.clear();
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
 	});
@@ -142,13 +142,36 @@ function finishInit() {
 function refreshLocations()
 {
 	_service.getLocations(function(locations){
-		_map.graphics.clear();
+		
 		_locations = locations; 
+		var matches;
+		var flag = false;
 		$.each(_locations, function(index, value) {
-			_map.graphics.add(value);
+			matches = $.grep(_map.graphics.graphics, function(n, i) {
+				return n.attributes.getStandardizedName() == value.attributes.getStandardizedName();
+			});
+			if (matches.length > 0) {
+				if (matches[0].attributes.getCount() != value.attributes.getCount()) {
+					console.log("count changed");
+					flag = true;
+				}
+			} else {
+				console.log("new one!");
+				flag = true;
+			}
 		});
-		writeTable();
+		
+		if (flag) {
+			console.log("wiping graphics");
+			_map.graphics.clear();
+			$.each(_locations, function(index, value) {
+				_map.graphics.add(value);
+			});
+			writeTable();			
+		}
+		
 		setTimeout(refreshLocations, REFRESH_RATE);
+		
 	});
 	
 }
