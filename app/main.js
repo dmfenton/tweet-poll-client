@@ -370,8 +370,8 @@ function handleWindowResize() {
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
-	$(".page1").css("max-height", $("#map").height()-100);
-	$(".page2").css("max-height", $("#map").height()-100);
+	$(".page1").css("max-height", $("#map").height()-170);
+	$(".page2").css("max-height", $("#map").height()-170);
 }
 
 function createSymbol(size, opacity)
