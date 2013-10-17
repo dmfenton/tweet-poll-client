@@ -160,7 +160,11 @@ a:hover{
 	border-top-left-radius:20px;
 	border-top-right-radius:20px;
     position: relative;
-	overflow:auto;
+}
+
+#table {
+	overflow-x:hidden;
+	overflow-y:auto;
 }
 
 .page2 {

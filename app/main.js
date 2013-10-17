@@ -326,14 +326,12 @@ function writeTable()
 		if (a.name > b.name) return 1;
 		return 0;
 	});
-	$(".page1").empty();
-	var ul = $("<ul></ul>");
+	$("#table").empty();
 	var li;
 	$.each(list, function(index, value){
 		li = "<li>"+value.name+"<div class='hiddenData'>"+value.standardizedName+"</div></li>";
-		$(ul).append(li);
+		$("#table").append(li);
 	});
-	$(".page1").append(ul);
 	$(".page1 li").click(tableRec_onClick);
 }
 
@@ -372,9 +370,10 @@ function handleWindowResize() {
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
-	$(".page1").css("max-height", $("#map").height()-170);
+	//$(".page1").css("max-height", $("#map").height()-170);
 	$(".page2").css("max-height", $("#map").height()-170);
 	$("#info").css("max-height", $("#map").height()-260);
+	$("#table").css("max-height", $("#map").height()-175);	
 }
 
 function createSymbol(size, opacity)
