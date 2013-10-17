@@ -169,7 +169,6 @@ a:hover{
 	border-top-right-radius:20px;
     position: relative;
     display: none;
-	overflow:auto;
 }
 
 #listIcon {
@@ -183,6 +182,8 @@ a:hover{
 
 #info {
 	margin-top:50px;
+	overflow-x:hidden;
+	overflow-y:auto;
 }
 
 .page1 li {

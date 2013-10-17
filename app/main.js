@@ -286,7 +286,6 @@ function writeLyrics(recs)
 						
 	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
 	
-	$(".page2").css("overflow","hidden");
 	$("#info").hide();
 	var count = 0;
 	$.each(recs, function(index, value) {
@@ -300,13 +299,13 @@ function writeLyrics(recs)
 				$("#info").append("<br>");
 				$("#info").append("<br>");
 				if (count == recs.length) {
-					$("#info").fadeIn(3000,"linear",function(){$(".page2").css("overflow","auto");});
+					$("#info").fadeIn(3000,"linear",function(){});
 				}
 			}, 
 			error: function(event) {
 				count++;
 				if (count == recs.length) {
-					$("#info").fadeIn(3000,"linear",function(){$(".page2").css("overflow","auto");});				
+					$("#info").fadeIn(3000,"linear",function(){});
 				}
 			}
 		});			
@@ -372,6 +371,7 @@ function handleWindowResize() {
 	_map.resize();
 	$(".page1").css("max-height", $("#map").height()-170);
 	$(".page2").css("max-height", $("#map").height()-170);
+	$("#info").css("max-height", $("#map").height()-260);
 }
 
 function createSymbol(size, opacity)
