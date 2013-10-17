@@ -270,6 +270,8 @@ function postSelection()
 
 	_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 		$("#info").empty();
+		$("#locationTitle").empty();
+		$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
 		writeLyrics(recs);		
 		flipToLyrics();
 	});	
@@ -286,9 +288,6 @@ function writeLyrics(recs)
 	
 	$(".page2").css("overflow","hidden");
 	$("#info").hide();
-	$("#info").append("<b>"+_selected.attributes.getShortName()+"</b>");
-	$("#info").append("<br>");
-	$("#info").append("<br>");
 	var count = 0;
 	$.each(recs, function(index, value) {
 		$.ajax({

@@ -177,6 +177,14 @@ a:hover{
 	cursor:pointer;
 }
 
+#locationTitle {
+	float:left;
+}
+
+#info {
+	margin-top:50px;
+}
+
 .page1 li {
 	color:#E8E8E8;
 	padding:5px;	
