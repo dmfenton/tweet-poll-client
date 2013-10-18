@@ -88,11 +88,8 @@ function finishInit() {
 		deselect();
         flipToTable();
     });
-	_map.graphics.clear();
-	$.each(_locations, function(index, value) {
-		_map.graphics.add(value);
-	});
 	
+	loadGraphics();	
 	writeTable();
 	
 	var params = esri.urlToObject(document.location.href).query;
@@ -156,10 +153,7 @@ function refreshLocations()
 		
 		if (flag) {
 			console.log("wiping graphics");
-			_map.graphics.clear();
-			$.each(_locations, function(index, value) {
-				_map.graphics.add(value);
-			});
+			loadGraphics();
 			writeTable();			
 		}
 		
@@ -167,6 +161,14 @@ function refreshLocations()
 		
 	});
 	
+}
+
+function loadGraphics()
+{
+	_map.graphics.clear();
+	$.each(_locations, function(index, value) {
+		_map.graphics.add(value);
+	});
 }
 
 function onKeyDown(e)
