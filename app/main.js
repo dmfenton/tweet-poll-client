@@ -59,13 +59,9 @@ function init() {
         _map.centerAndZoom(_center, LEVEL);
     });
 	
-	$("#title").append(TITLE);
-	
 	_map = new esri.Map("map", {slider:false});
-	
 	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE));
 	_map.centerAndZoom(_center, LEVEL);
-	
 
 	if(_map.loaded){
 		finishInit();
@@ -239,7 +235,6 @@ function refreshLocations()
 	
 }
 
-
 /**********
 	events
 **********/
@@ -257,7 +252,6 @@ function layerOV_onMouseOver(event)
 	}
 }
 
-
 function layerOV_onMouseOut(event) 
 {
 	var graphic = event.graphic;
@@ -265,7 +259,6 @@ function layerOV_onMouseOut(event)
 	$("#hoverInfo").hide();
 	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), 0.25));
 }
-
 
 function layerOV_onClick(event) 
 {
