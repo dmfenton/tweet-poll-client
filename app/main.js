@@ -93,11 +93,14 @@ function finishInit() {
 	
 	var starterName = getStarterName();
 	if (starterName) {
-		_selected = $.grep(_locations, function(n, i) {
+		var results = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
-		})[0];
-		postSelection();
-		_map.centerAndZoom(_selected.geometry, 5);
+		});
+		if (results.length > 0) {
+			_selected = results[0];
+			postSelection();
+			_map.centerAndZoom(_selected.geometry, 5);
+		}
 	}
 		
 	dojo.connect(_map.graphics, "onMouseOver", layerOV_onMouseOver);
