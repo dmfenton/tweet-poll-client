@@ -167,24 +167,6 @@ function refreshLocations()
 	
 }
 
-function loadGraphics()
-{
-	_map.graphics.clear();
-	$.each(_locations, function(index, value) {
-		_map.graphics.add(value);
-	});
-}
-
-function onKeyDown(e)
-{
-
-	if (e.keyCode == 27) {
-		if (_selected) {
-			deselect();
-		}
-	}
-	
-}
 
 /**********
 	events
@@ -232,6 +214,17 @@ function tableRec_onClick(event)
 	adjustExtent();
 }
 
+function onKeyDown(e)
+{
+
+	if (e.keyCode == 27) {
+		if (_selected) {
+			deselect();
+		}
+	}
+	
+}
+
 /*******************
 	helper functions
 ********************/
@@ -257,6 +250,14 @@ function deselect()
 		textColor : "#000000",
 		pointerColor: "#FFFFFF"
 	});		
+}
+
+function loadGraphics()
+{
+	_map.graphics.clear();
+	$.each(_locations, function(index, value) {
+		_map.graphics.add(value);
+	});
 }
 
 function postSelection()
