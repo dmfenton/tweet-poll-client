@@ -91,16 +91,7 @@ function finishInit() {
 	loadGraphics();	
 	writeTable();
 	
-	var params = esri.urlToObject(document.location.href).query;
-	var starterName;
-	if (params != null) {
-		$.each(params,function(index,value){			
-			if (index.toLowerCase() == PARAMETER_STANDARDIZEDNAME.toLowerCase()) {
-				starterName = value
-			}
-		});
-	}
-	
+	var starterName = getStarterName();
 	if (starterName) {
 		_selected = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
@@ -385,4 +376,18 @@ function createSymbol(size, opacity)
 				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b]), 2),
 				new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b, opacity])
 			);	
+}
+
+function getStarterName()
+{
+	var sn;
+	var params = esri.urlToObject(document.location.href).query;
+	if (params != null) {
+		$.each(params,function(index,value){			
+			if (index.toLowerCase() == PARAMETER_STANDARDIZEDNAME.toLowerCase()) {
+				sn = value
+			}
+		});
+	}
+	return sn;	
 }
