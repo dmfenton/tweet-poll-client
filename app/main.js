@@ -129,6 +129,10 @@ function finishInit() {
 	
 }
 
+/*****************
+	core functions
+*******************/
+
 function refreshLocations()
 {
 	_service.getLocations(function(locations){
@@ -182,6 +186,10 @@ function onKeyDown(e)
 	
 }
 
+/**********
+	events
+**********/
+
 function layerOV_onMouseOver(event) 
 {
 	if (_isMobile) return;
@@ -223,6 +231,10 @@ function tableRec_onClick(event)
 	postSelection();
 	adjustExtent();
 }
+
+/*******************
+	helper functions
+********************/
 
 function adjustExtent()
 {
