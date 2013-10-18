@@ -86,7 +86,6 @@ function finishInit() {
 	
 	$("#listIcon").click(function(e) {
 		deselect();
-        flipToTable();
     });
 	
 	loadGraphics();	
@@ -178,7 +177,6 @@ function onKeyDown(e)
 	if (e.keyCode == 27) {
 		if (_selected) {
 			deselect();
-			flipToTable();
 		}
 	}
 	
