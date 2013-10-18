@@ -101,6 +101,7 @@ function finishInit() {
 			}
 		});
 	}
+	
 	if (starterName) {
 		_selected = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
@@ -359,11 +360,9 @@ function hoverInfoPos(x,y){
 }
 
 function handleWindowResize() {
-	$("#map").height($("body").height() - $("#header").height());
+	$("#map").height($("body").height());
 	$("#map").width($("body").width());
 	_map.resize();
-	//$(".page1").css("max-height", $("#map").height()-170);
-	$(".page2").css("max-height", $("#map").height()-170);
 	$("#info").css("max-height", $("#map").height()-260);
 	$("#table").css("max-height", $("#map").height()-175);	
 }
