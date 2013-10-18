@@ -170,14 +170,14 @@ function postSelection()
 		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 	
 			$("#info").empty();
-			writeLyrics(recs);		
+			writeInfo(recs);		
 			flipToLyrics();
 		});	
 	});
 	
 }
 
-function writeLyrics(recs)
+function writeInfo(recs)
 {
 	
 	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? 
