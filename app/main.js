@@ -133,6 +133,84 @@ function finishInit() {
 	core functions
 *******************/
 
+function deselect()
+{
+	_selected = null;
+	$(".page1 li").removeClass("selected");
+	if ($('.page2').is(':visible')) flipToTable();
+	$("#map").multiTips({
+		pointArray : [],
+		labelValue: "",
+		mapVariable : _map,
+		labelDirection : "top",
+		backgroundColor : "#FFFFFF",
+		textColor : "#000000",
+		pointerColor: "#FFFFFF"
+	});		
+}
+
+function postSelection()
+{
+	
+	if ($("#question").css("display") != "none") $("#question").slideUp();
+	$("#locationTitle").empty();
+	$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
+	
+	$("#info").slideUp(null,null,function(){
+		$("#map").multiTips({
+			pointArray : [_selected],
+			labelValue: _selected.attributes.getShortName(),
+			mapVariable : _map,
+			labelDirection : "top",
+			backgroundColor : "#FFFFFF",
+			textColor : "#000000",
+			pointerColor: "#FFFFFF"
+		});		
+	
+		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
+	
+			$("#info").empty();
+			writeLyrics(recs);		
+			flipToLyrics();
+		});	
+	});
+	
+}
+
+function writeLyrics(recs)
+{
+	
+	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? 
+						"http://storymaps.esri.com/proxy/proxy.ashx" : 
+						"http://localhost/proxy/proxy.ashx";
+						
+	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
+	
+	var count = 0;
+	$.each(recs, function(index, value) {
+		$.ajax({
+			type: 'GET',
+			url: SERVICE_URL+"?id="+value.tweet_id,
+			cache: true,
+			success: function(result) {
+				count++;
+				$("#info").append(result.html);
+				$("#info").append("<br>");
+				$("#info").append("<br>");
+				if (count == recs.length) {
+					$("#info").slideDown();
+				}
+			}, 
+			error: function(event) {
+				count++;
+				if (count == recs.length) {
+					$("#info").slideDown();
+				}
+			}
+		});			
+	});
+}
+
 function refreshLocations()
 {
 	_service.getLocations(function(locations){
@@ -236,89 +314,11 @@ function adjustExtent()
 		_map.centerAt(_selected.geometry);
 }
 
-function deselect()
-{
-	_selected = null;
-	$(".page1 li").removeClass("selected");
-	if ($('.page2').is(':visible')) flipToTable();
-	$("#map").multiTips({
-		pointArray : [],
-		labelValue: "",
-		mapVariable : _map,
-		labelDirection : "top",
-		backgroundColor : "#FFFFFF",
-		textColor : "#000000",
-		pointerColor: "#FFFFFF"
-	});		
-}
-
 function loadGraphics()
 {
 	_map.graphics.clear();
 	$.each(_locations, function(index, value) {
 		_map.graphics.add(value);
-	});
-}
-
-function postSelection()
-{
-	
-	if ($("#question").css("display") != "none") $("#question").slideUp();
-	$("#locationTitle").empty();
-	$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
-	
-	$("#info").slideUp(null,null,function(){
-		$("#map").multiTips({
-			pointArray : [_selected],
-			labelValue: _selected.attributes.getShortName(),
-			mapVariable : _map,
-			labelDirection : "top",
-			backgroundColor : "#FFFFFF",
-			textColor : "#000000",
-			pointerColor: "#FFFFFF"
-		});		
-	
-		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
-	
-			$("#info").empty();
-			writeLyrics(recs);		
-			flipToLyrics();
-		});	
-	});
-	
-}
-
-function writeLyrics(recs)
-{
-	
-	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? 
-						"http://storymaps.esri.com/proxy/proxy.ashx" : 
-						"http://localhost/proxy/proxy.ashx";
-						
-	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
-	
-	var count = 0;
-	$.each(recs, function(index, value) {
-		$.ajax({
-			type: 'GET',
-			url: SERVICE_URL+"?id="+value.tweet_id,
-			cache: true,
-			success: function(result) {
-				count++;
-				$("#info").append(result.html);
-				$("#info").append("<br>");
-				$("#info").append("<br>");
-				if (count == recs.length) {
-					$("#info").slideDown();
-				}
-			}, 
-			error: function(event) {
-				count++;
-				if (count == recs.length) {
-					$("#info").slideDown();
-				}
-			}
-		});			
 	});
 }
 
