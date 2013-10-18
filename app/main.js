@@ -1,8 +1,3 @@
-dojo.require("dijit.layout.BorderContainer");
-dojo.require("dijit.layout.ContentPane");
-dojo.require("esri.arcgis.utils");
-dojo.require("esri.map");
-
 /******************************************************
 ***************** begin config section ****************
 *******************************************************/
@@ -35,8 +30,6 @@ var _jqueryReady = false;
 
 var _isMobile = isMobile();
 var _isIE = (navigator.appVersion.indexOf("MSIE") > -1);
-
-var _isEmbed = false;
 
 dojo.addOnLoad(function() {_dojoReady = true;init()});
 jQuery(document).ready(function() {_jqueryReady = true;init()});
@@ -364,9 +357,6 @@ function hoverInfoPos(x,y){
 }
 
 function handleWindowResize() {
-	if ((($("body").height() <= 500) || ($("body").width() <= 800)) || _isEmbed) $("#header").height(0);
-	else $("#header").height(115);
-	
 	$("#map").height($("body").height() - $("#header").height());
 	$("#map").width($("body").width());
 	_map.resize();
