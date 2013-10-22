@@ -41,7 +41,7 @@ function init() {
 	
 	$(document).keydown(onKeyDown);
 	
-	_service = new HerokuService();
+	_service = new HerokuService(refreshHandler, REFRESH_RATE);
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 	
@@ -70,9 +70,6 @@ function init() {
 			finishInit();
 		});
 	}
-
-	_service.getLocations(function(locations){_locations = locations; finishInit()});
-	
 }
 
 function finishInit() {
@@ -114,9 +111,7 @@ function finishInit() {
 	
 	handleWindowResize();
 	$("#whiteOut").fadeOut();
-	
-	if (REFRESH_RATE > 0) setTimeout(refreshLocations, REFRESH_RATE);
-	
+		
 }
 
 /*****************
@@ -201,43 +196,30 @@ function writeInfo(recs)
 	});
 }
 
-function refreshLocations()
-{
-	_service.getLocations(function(locations){
-		
-		_locations = locations; 
-		var matches;
-		var flag = false;
-		$.each(_locations, function(index, value) {
-			matches = $.grep(_map.graphics.graphics, function(n, i) {
-				return n.attributes.getStandardizedName() == value.attributes.getStandardizedName();
-			});
-			if (matches.length > 0) {
-				if (matches[0].attributes.getCount() != value.attributes.getCount()) {
-					console.log("count changed");
-					flag = true;
-				}
-			} else {
-				console.log("new one!");
-				flag = true;
-			}
-		});
-		
-		if (flag) {
-			console.log("wiping graphics");
-			loadGraphics();
-			writeTable();			
-		}
-		
-		setTimeout(refreshLocations, REFRESH_RATE);
-		
-	});
-	
-}
-
 /**********
 	events
 **********/
+
+function refreshHandler(json)
+{
+	console.log("refreshHandler", _locations);
+	var flag = (_locations == null);
+	_locations = [];
+	var sym, pt, atts;
+	$.each(json, function(index, value){
+		sym = createSymbol(value.count*SYMBOL_BASE_SIZE,0.25);
+		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
+		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
+		_locations.push(new esri.Graphic(pt, sym, atts));		
+	});
+	
+	if (flag) {
+		finishInit();
+	} else {
+		loadGraphics();	
+		writeTable();	
+	}
+}
 
 function layerOV_onMouseOver(event) 
 {
