@@ -96,7 +96,7 @@ function finishInit() {
 	
 	loadGraphics(_map, _locations);	
 	
-	var starterName = getStarterName();
+	var starterName = getStarterName(PARAMETER_STANDARDIZEDNAME);
 	if (starterName) {
 		var results = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
@@ -342,13 +342,13 @@ function createSymbol(size, opacity)
 			);	
 }
 
-function getStarterName()
+function getStarterName(argName)
 {
 	var sn;
 	var params = esri.urlToObject(document.location.href).query;
 	if (params != null) {
 		$.each(params,function(index,value){			
-			if (index.toLowerCase() == PARAMETER_STANDARDIZEDNAME.toLowerCase()) {
+			if (index.toLowerCase() == argName.toLowerCase()) {
 				sn = value
 			}
 		});
