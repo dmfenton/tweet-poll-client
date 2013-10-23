@@ -7,7 +7,7 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 						
 	var SERVICE_URL = PROXY_URL+"?http://esri-destination.herokuapp.com/";
 	
-	var _json;
+	var _recs;
 	
 	fetchLocations();
 	
@@ -24,13 +24,13 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 	function processLocations(results)
 	{
 		results.sort(function(a,b){return b.count - a.count});
-		if (_json == null) {
-			_json = results;
-			refreshHandler(_json, true);
+		if (_recs == null) {
+			_recs = results;
+			refreshHandler(_recs, true);
 		} else {
-			if (diff(results, _json)) {
-				_json = results;
-				refreshHandler(_json, false);
+			if (diff(results, _recs)) {
+				_recs = results;
+				refreshHandler(_recs, false);
 			}			
 		}
 		setTimeout(fetchLocations, REFRESH_RATE);
