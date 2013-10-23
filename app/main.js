@@ -262,11 +262,11 @@ function adjustExtent()
 		_map.centerAt(_selected.geometry);
 }
 
-function createGraphics(json) 
+function createGraphics(recs) 
 {
 	var arr = [];
 	var sym, pt, atts;
-	$.each(json, function(index, value){
+	$.each(recs, function(index, value){
 		sym = Common.createSymbol(value.count*SYMBOL_BASE_SIZE, SYMBOL_COLOR, 0.25);
 		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
 		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
