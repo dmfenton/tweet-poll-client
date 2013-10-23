@@ -44,7 +44,7 @@ function init() {
 	
 	_service = new HerokuService(
 		function(flag) {
-			_locations = createGraphics(_service.getRecsSortedByCount());
+			_locations = createGraphics(_service.getRecsSortedByCount(), SYMBOL_BASE_SIZE, SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
 			if (flag) {
 				finishInit();
@@ -262,12 +262,12 @@ function adjustExtent()
 		_map.centerAt(_selected.geometry);
 }
 
-function createGraphics(recs) 
+function createGraphics(recs, symBaseSize, symColor) 
 {
 	var arr = [];
 	var sym, pt, atts;
 	$.each(recs, function(index, value){
-		sym = Common.createSymbol(value.count*SYMBOL_BASE_SIZE, SYMBOL_COLOR, 0.25);
+		sym = Common.createSymbol(value.count*symBaseSize, symColor, 0.25);
 		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
 		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
 		arr.push(new esri.Graphic(pt, sym, atts));		
