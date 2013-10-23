@@ -41,7 +41,17 @@ function init() {
 	
 	$(document).keydown(onKeyDown);
 	
-	_service = new HerokuService(refreshHandler, REFRESH_RATE);
+	_service = new HerokuService(
+		function(json, flag) {
+			_locations = createGraphics(json);
+			if (flag) {
+				finishInit();
+			} else {
+				loadGraphics();	
+				writeTable();	
+			}	
+		}
+		, REFRESH_RATE);
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 	
@@ -200,27 +210,6 @@ function writeInfo(recs)
 	events
 **********/
 
-function refreshHandler(json)
-{
-	console.log("refreshHandler", _locations);
-	var flag = (_locations == null);
-	_locations = [];
-	var sym, pt, atts;
-	$.each(json, function(index, value){
-		sym = createSymbol(value.count*SYMBOL_BASE_SIZE,0.25);
-		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
-		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
-		_locations.push(new esri.Graphic(pt, sym, atts));		
-	});
-	
-	if (flag) {
-		finishInit();
-	} else {
-		loadGraphics();	
-		writeTable();	
-	}
-}
-
 function layerOV_onMouseOver(event) 
 {
 	if (_isMobile) return;
@@ -281,6 +270,19 @@ function adjustExtent()
 	// make sure point doesn't occupy right-most 400px of map.
 	if ((_map.toScreen(_selected.geometry).x > ($("#map").width() - 400)) || (!_map.extent.expand(0.75).contains(_selected.geometry))) 
 		_map.centerAt(_selected.geometry);
+}
+
+function createGraphics(json) 
+{
+	var arr = [];
+	var sym, pt, atts;
+	$.each(json, function(index, value){
+		sym = createSymbol(value.count*SYMBOL_BASE_SIZE,0.25);
+		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
+		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
+		arr.push(new esri.Graphic(pt, sym, atts));		
+	});
+	return arr;
 }
 
 function loadGraphics()
