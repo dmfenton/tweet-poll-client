@@ -96,7 +96,7 @@ function finishInit() {
 	
 	loadGraphics(_map, _locations);	
 	
-	var starterName = getStarterName(PARAMETER_STANDARDIZEDNAME);
+	var starterName = Common.getStarterName(PARAMETER_STANDARDIZEDNAME);
 	if (starterName) {
 		var results = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
@@ -209,7 +209,7 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, SYMBOL_COLOR, 0.35));
+		graphic.setSymbol(Common.createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, SYMBOL_COLOR, 0.35));
 		$("#hoverInfo").html(graphic.attributes.getShortName());
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
@@ -221,7 +221,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
+	graphic.setSymbol(Common.createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
 }
 
 function layerOV_onClick(event) 
@@ -270,7 +270,7 @@ function createGraphics(json)
 	var arr = [];
 	var sym, pt, atts;
 	$.each(json, function(index, value){
-		sym = createSymbol(value.count*SYMBOL_BASE_SIZE, SYMBOL_COLOR, 0.25);
+		sym = Common.createSymbol(value.count*SYMBOL_BASE_SIZE, SYMBOL_COLOR, 0.25);
 		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
 		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
 		arr.push(new esri.Graphic(pt, sym, atts));		
@@ -331,27 +331,4 @@ function handleWindowResize() {
 	_map.resize();
 	$("#info").css("max-height", $("#map").height()-260);
 	$("#table").css("max-height", $("#map").height()-175);	
-}
-
-function createSymbol(size, rgb, opacity)
-{
-	return new esri.symbol.SimpleMarkerSymbol(
-				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
-				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color(rgb), 2),
-				new dojo.Color(rgb.concat([opacity]))
-			);	
-}
-
-function getStarterName(argName)
-{
-	var sn;
-	var params = esri.urlToObject(document.location.href).query;
-	if (params != null) {
-		$.each(params,function(index,value){			
-			if (index.toLowerCase() == argName.toLowerCase()) {
-				sn = value
-			}
-		});
-	}
-	return sn;	
 }
