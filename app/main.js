@@ -178,7 +178,6 @@ function fetchTweets(recs)
 {	
 	var count = 0;
 	$.each(recs, function(index, value) {
-		console.log(value);
 		_twitter.fetch(value.tweet_id, 
 						function(result){
 							count++;
@@ -245,13 +244,11 @@ function tableRec_onClick(event)
 
 function onKeyDown(e)
 {
-
 	if (e.keyCode == 27) {
 		if (_selected) {
 			deselect();
 		}
 	}
-	
 }
 
 /*******************
