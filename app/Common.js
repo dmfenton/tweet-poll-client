@@ -2,6 +2,20 @@ function Common()
 {
 }
 
+Common.createGraphics = function(recs, symBaseSize, symColor) 
+{
+	var arr = [];
+	var sym, pt, atts;
+	$.each(recs, function(index, value){
+		sym = Common.createSymbol(value.count*symBaseSize, symColor, 0.25);
+		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
+		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
+		arr.push(new esri.Graphic(pt, sym, atts));		
+	});
+	return arr;
+}
+
+
 Common.createSymbol = function(size, rgb, opacity)
 {
 	return new esri.symbol.SimpleMarkerSymbol(

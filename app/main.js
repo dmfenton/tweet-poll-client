@@ -44,7 +44,7 @@ function init() {
 	
 	_service = new HerokuService(
 		function(flag) {
-			_locations = createGraphics(_service.getRecsSortedByCount(), SYMBOL_BASE_SIZE, SYMBOL_COLOR);
+			_locations = Common.createGraphics(_service.getRecsSortedByCount(), SYMBOL_BASE_SIZE, SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
 			if (flag) {
 				finishInit();
@@ -260,19 +260,6 @@ function adjustExtent()
 	// make sure point doesn't occupy right-most 400px of map.
 	if ((_map.toScreen(_selected.geometry).x > ($("#map").width() - 400)) || (!_map.extent.expand(0.75).contains(_selected.geometry))) 
 		_map.centerAt(_selected.geometry);
-}
-
-function createGraphics(recs, symBaseSize, symColor) 
-{
-	var arr = [];
-	var sym, pt, atts;
-	$.each(recs, function(index, value){
-		sym = Common.createSymbol(value.count*symBaseSize, symColor, 0.25);
-		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
-		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
-		arr.push(new esri.Graphic(pt, sym, atts));		
-	});
-	return arr;
 }
 
 function writeTable(list)
