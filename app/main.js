@@ -47,7 +47,7 @@ function init() {
 			if (flag) {
 				finishInit();
 			} else {
-				loadGraphics();	
+				loadGraphics(_map, _locations);	
 				writeTable();	
 			}	
 		}
@@ -91,7 +91,7 @@ function finishInit() {
 		deselect();
     });
 	
-	loadGraphics();	
+	loadGraphics(_map, _locations);	
 	writeTable();
 	
 	var starterName = getStarterName();
@@ -285,11 +285,11 @@ function createGraphics(json)
 	return arr;
 }
 
-function loadGraphics()
+function loadGraphics(map, graphics)
 {
-	_map.graphics.clear();
-	$.each(_locations, function(index, value) {
-		_map.graphics.add(value);
+	map.graphics.clear();
+	$.each(graphics, function(index, value) {
+		map.graphics.add(value);
 	});
 }
 
