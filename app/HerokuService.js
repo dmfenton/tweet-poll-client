@@ -36,12 +36,12 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 		setTimeout(fetchLocations, REFRESH_RATE);
 	}
 	
-	function diff(json1, json2)
+	function diff(arr1, arr2)
 	{
 		var matches;
 		var flag = false;
-		$.each(json1, function(index, value) {
-			matches = $.grep(json2, function(n, i) {
+		$.each(arr1, function(index, value) {
+			matches = $.grep(arr2, function(n, i) {
 				return n.standardized_name == value.standardized_name;
 			});
 			if (matches.length > 0) {
