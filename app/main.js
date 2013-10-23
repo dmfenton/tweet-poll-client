@@ -8,7 +8,7 @@ var BASEMAP_SERVICE = "http://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/res
 var PARAMETER_STANDARDIZEDNAME = "standardizedName";
 
 var SYMBOL_BASE_SIZE = 7;
-var SYMBOL_COLOR = {r:255,g:0,b:0};
+var SYMBOL_COLOR = [255, 0, 0];
 
 var CENTER_X = -10910315;
 var CENTER_Y = 4002853;
@@ -209,7 +209,7 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, 0.35));
+		graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, SYMBOL_COLOR, 0.35));
 		$("#hoverInfo").html(graphic.attributes.getShortName());
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
@@ -221,7 +221,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), 0.25));
+	graphic.setSymbol(createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
 }
 
 function layerOV_onClick(event) 
@@ -270,7 +270,7 @@ function createGraphics(json)
 	var arr = [];
 	var sym, pt, atts;
 	$.each(json, function(index, value){
-		sym = createSymbol(value.count*SYMBOL_BASE_SIZE,0.25);
+		sym = createSymbol(value.count*SYMBOL_BASE_SIZE, SYMBOL_COLOR, 0.25);
 		pt = new esri.geometry.Point(parseFloat(value.x), parseFloat(value.y));
 		atts = new LocationRec(value.short_name, value.standardized_name, value.count);
 		arr.push(new esri.Graphic(pt, sym, atts));		
@@ -333,12 +333,12 @@ function handleWindowResize() {
 	$("#table").css("max-height", $("#map").height()-175);	
 }
 
-function createSymbol(size, opacity)
+function createSymbol(size, rgb, opacity)
 {
 	return new esri.symbol.SimpleMarkerSymbol(
 				esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, size,
-				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b]), 2),
-				new dojo.Color([SYMBOL_COLOR.r, SYMBOL_COLOR.g, SYMBOL_COLOR.b, opacity])
+				new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color(rgb), 2),
+				new dojo.Color(rgb.concat([opacity]))
 			);	
 }
 
