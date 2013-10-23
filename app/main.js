@@ -42,9 +42,9 @@ function init() {
 	$(document).keydown(onKeyDown);
 	
 	_service = new HerokuService(
-		function(json, flag) {
-			_locations = createGraphics(json);
-			writeTable(json);	
+		function(results, flag) {
+			_locations = createGraphics(results);
+			writeTable(results);	
 			if (flag) {
 				finishInit();
 			} else {
@@ -292,9 +292,9 @@ function loadGraphics(map, graphics)
 	});
 }
 
-function writeTable(json)
+function writeTable(recs)
 {
-	var list = $.extend(true, [], json);
+	var list = $.extend(true, [], recs);
 	list.sort(function(a,b){
 		if (a.short_name < b.short_name) return -1;
 		if (a.short_name > b.short_name) return 1;
