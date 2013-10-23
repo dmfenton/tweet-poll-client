@@ -44,11 +44,11 @@ function init() {
 	_service = new HerokuService(
 		function(json, flag) {
 			_locations = createGraphics(json);
+			writeTable(json);	
 			if (flag) {
 				finishInit();
 			} else {
 				loadGraphics(_map, _locations);	
-				writeTable();	
 			}	
 		}
 		, REFRESH_RATE);
@@ -92,7 +92,6 @@ function finishInit() {
     });
 	
 	loadGraphics(_map, _locations);	
-	writeTable();
 	
 	var starterName = getStarterName();
 	if (starterName) {
@@ -293,21 +292,18 @@ function loadGraphics(map, graphics)
 	});
 }
 
-function writeTable()
+function writeTable(json)
 {
-	var list = [];
-	$.each(_locations, function(index, value){
-		list.push({name: value.attributes.getShortName(), standardizedName: value.attributes.getStandardizedName()});
-	});
+	var list = $.extend(true, [], json);
 	list.sort(function(a,b){
-		if (a.name < b.name) return -1;
-		if (a.name > b.name) return 1;
+		if (a.short_name < b.short_name) return -1;
+		if (a.short_name > b.short_name) return 1;
 		return 0;
 	});
 	$("#table").empty();
 	var li;
 	$.each(list, function(index, value){
-		li = "<li>"+value.name+"<div class='hiddenData'>"+value.standardizedName+"</div></li>";
+		li = "<li>"+value.short_name+"<div class='hiddenData'>"+value.standardized_name+"</div></li>";
 		$("#table").append(li);
 	});
 	$(".page1 li").click(tableRec_onClick);
