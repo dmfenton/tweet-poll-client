@@ -21,6 +21,7 @@ var REFRESH_RATE = 3000;
 
 var _map;
 var _service;
+var _twitter;
 var _locations;
 var _center;
 var _selected;
@@ -52,6 +53,8 @@ function init() {
 			}	
 		}
 		, REFRESH_RATE);
+		
+	_twitter = new TwitterService();
 	
 	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
 	
@@ -164,44 +167,35 @@ function postSelection()
 		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
 	
 			$("#info").empty();
-			writeInfo(recs);		
+			fetchTweets(recs);		
 			flipToLyrics();
 		});	
 	});
 	
 }
 
-function writeInfo(recs)
-{
-	
-	var PROXY_URL = window.location.href.toLowerCase().indexOf("storymaps.esri.com") >= 0 ? 
-						"http://storymaps.esri.com/proxy/proxy.ashx" : 
-						"http://localhost/proxy/proxy.ashx";
-						
-	var SERVICE_URL = PROXY_URL+"?https://api.twitter.com/1/statuses/oembed.json"
-	
+function fetchTweets(recs)
+{	
 	var count = 0;
 	$.each(recs, function(index, value) {
-		$.ajax({
-			type: 'GET',
-			url: SERVICE_URL+"?id="+value.tweet_id,
-			cache: true,
-			success: function(result) {
-				count++;
-				$("#info").append(result.html);
-				$("#info").append("<br>");
-				$("#info").append("<br>");
-				if (count == recs.length) {
-					$("#info").slideDown();
-				}
-			}, 
-			error: function(event) {
-				count++;
-				if (count == recs.length) {
-					$("#info").slideDown();
-				}
-			}
-		});			
+		console.log(value);
+		_twitter.fetch(value.tweet_id, 
+						function(result){
+							count++;
+							$("#info").append(result.html);
+							$("#info").append("<br>");
+							$("#info").append("<br>");
+							if (count == recs.length) {
+								$("#info").slideDown();
+							}
+						}, 
+						function(event){
+							count++;
+							if (count == recs.length) {
+								$("#info").slideDown();
+							}							
+						}
+						);
 	});
 }
 
