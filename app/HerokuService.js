@@ -23,14 +23,13 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 		
 	function processLocations(results)
 	{
-		results.sort(function(a,b){return b.count - a.count});
 		if (_recs == null) {
 			_recs = results;
-			refreshHandler(_recs, true);
+			refreshHandler(true);
 		} else {
 			if (diff(results, _recs)) {
 				_recs = results;
-				refreshHandler(_recs, false);
+				refreshHandler(false);
 			}			
 		}
 		setTimeout(fetchLocations, REFRESH_RATE);
@@ -55,6 +54,24 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 			}
 		});
 		return flag;
+	}
+	
+	this.getRecsSortedByCount = function()
+	{
+		var list = $.extend(true, [], _recs);
+		list.sort(function(a,b){return b.count - a.count});
+		return list;		
+	}
+	
+	this.getRecsSortedByName = function()
+	{
+		var list = $.extend(true, [], _recs);
+		list.sort(function(a,b){
+			if (a.short_name < b.short_name) return -1;
+			if (a.short_name > b.short_name) return 1;
+			return 0;
+		});
+		return list;		
 	}
 	
 	this.queryRecsByCity = function(name, callBack)

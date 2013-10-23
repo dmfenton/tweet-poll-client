@@ -42,9 +42,9 @@ function init() {
 	$(document).keydown(onKeyDown);
 	
 	_service = new HerokuService(
-		function(results, flag) {
-			_locations = createGraphics(results);
-			writeTable(results);	
+		function(flag) {
+			_locations = createGraphics(_service.getRecsSortedByCount());
+			writeTable(_service.getRecsSortedByName());	
 			if (flag) {
 				finishInit();
 			} else {
@@ -292,14 +292,8 @@ function loadGraphics(map, graphics)
 	});
 }
 
-function writeTable(recs)
+function writeTable(list)
 {
-	var list = $.extend(true, [], recs);
-	list.sort(function(a,b){
-		if (a.short_name < b.short_name) return -1;
-		if (a.short_name > b.short_name) return 1;
-		return 0;
-	});
 	$("#table").empty();
 	var li;
 	$.each(list, function(index, value){
