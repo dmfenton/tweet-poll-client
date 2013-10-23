@@ -24,3 +24,12 @@ Common.getStarterName = function(argName)
 	}
 	return sn;	
 }
+
+Common.loadGraphics = function(map, graphics)
+{
+	map.graphics.clear();
+	$.each(graphics, function(index, value) {
+		map.graphics.add(value);
+	});
+}
+

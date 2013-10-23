@@ -49,7 +49,7 @@ function init() {
 			if (flag) {
 				finishInit();
 			} else {
-				loadGraphics(_map, _locations);	
+				Common.loadGraphics(_map, _locations);	
 			}	
 		}
 		, REFRESH_RATE);
@@ -94,7 +94,7 @@ function finishInit() {
 		deselect();
     });
 	
-	loadGraphics(_map, _locations);	
+	Common.loadGraphics(_map, _locations);	
 	
 	var starterName = Common.getStarterName(PARAMETER_STANDARDIZEDNAME);
 	if (starterName) {
@@ -273,14 +273,6 @@ function createGraphics(json)
 		arr.push(new esri.Graphic(pt, sym, atts));		
 	});
 	return arr;
-}
-
-function loadGraphics(map, graphics)
-{
-	map.graphics.clear();
-	$.each(graphics, function(index, value) {
-		map.graphics.add(value);
-	});
 }
 
 function writeTable(list)
