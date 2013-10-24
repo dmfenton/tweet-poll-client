@@ -1,24 +1,8 @@
-/******************************************************
-***************** begin config section ****************
-*******************************************************/
-
-var TITLE = "#WhereToLive"
-var BASEMAP_SERVICE = "http://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/DGCM_2Msmaller_BASE/MapServer";
-
-var PARAMETER_STANDARDIZEDNAME = "standardizedName";
-
-var SYMBOL_BASE_SIZE = 7;
-var SYMBOL_COLOR = [255, 0, 0];
-
-var CENTER_X = -10910315;
-var CENTER_Y = 4002853;
-var LEVEL = 4;
-var REFRESH_RATE = 3000;
-
-/******************************************************
-***************** end config section ******************
-*******************************************************/
-
+/* ****************************************************************
+	This is the main driver for the web (non-mobile) version of the 
+   	Twitter Poll app 
+	***************************************************************/
+   
 var _map;
 var _service;
 var _twitter;
@@ -44,7 +28,7 @@ function init() {
 	
 	_service = new HerokuService(
 		function(flag) {
-			_locations = Common.createGraphics(_service.getRecsSortedByCount(), SYMBOL_BASE_SIZE, SYMBOL_COLOR);
+			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
 			if (flag) {
 				finishInit();
@@ -52,11 +36,11 @@ function init() {
 				Common.loadGraphics(_map, _locations);	
 			}	
 		}
-		, REFRESH_RATE);
+		, Config.REFRESH_RATE);
 		
 	_twitter = new TwitterService();
 	
-	_center = new esri.geometry.Point(CENTER_X, CENTER_Y, new esri.SpatialReference(102100));
+	_center = new esri.geometry.Point(Config.CENTER_X, Config.CENTER_Y, new esri.SpatialReference(102100));
 	
 	// jQuery event assignment
 	
@@ -69,12 +53,12 @@ function init() {
         _map.setLevel(_map.getLevel()-1);
     });
 	$("#zoomExtent").click(function(e) {
-        _map.centerAndZoom(_center, LEVEL);
+        _map.centerAndZoom(_center, Config.LEVEL);
     });
 	
 	_map = new esri.Map("map", {slider:false});
-	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(BASEMAP_SERVICE));
-	_map.centerAndZoom(_center, LEVEL);
+	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(Config.BASEMAP_SERVICE));
+	_map.centerAndZoom(_center, Config.LEVEL);
 
 	if(_map.loaded){
 		finishInit();
@@ -96,7 +80,7 @@ function finishInit() {
 	
 	Common.loadGraphics(_map, _locations);	
 	
-	var starterName = Common.getStarterName(PARAMETER_STANDARDIZEDNAME);
+	var starterName = Common.getStarterName(Config.PARAMETER_STANDARDIZEDNAME);
 	if (starterName) {
 		var results = $.grep(_locations, function(n, i) {
 			return n.attributes.getStandardizedName() == starterName;
@@ -208,7 +192,7 @@ function layerOV_onMouseOver(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("pointer");
 	if (graphic!=_selected) {
-		graphic.setSymbol(Common.createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, SYMBOL_COLOR, 0.35));
+		graphic.setSymbol(Common.createSymbol(Config.SYMBOL_BASE_SIZE*graphic.attributes.getCount()+3, Config.SYMBOL_COLOR, 0.35));
 		$("#hoverInfo").html(graphic.attributes.getShortName());
 		var pt = _map.toScreen(graphic.geometry);
 		hoverInfoPos(pt.x,pt.y);	
@@ -220,7 +204,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(Common.createSymbol(SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
+	graphic.setSymbol(Common.createSymbol(Config.SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
 }
 
 function layerOV_onClick(event) 
