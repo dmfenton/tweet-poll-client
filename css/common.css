@@ -1,0 +1,19 @@
+#zoomToggle{
+	position:absolute;
+	left:15px;
+	top:15px;
+	width:32px;
+	z-index:2;
+	cursor:pointer;
+}
+
+#map {
+	position:relative;
+	border:none;
+	padding:0;
+	height:100%;
+	width:100%;
+	overflow:hidden;
+}
+
+

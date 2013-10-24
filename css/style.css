@@ -46,15 +46,6 @@ a:hover{
 	text-decoration:underline;
 }
 
-#map {
-	position:relative;
-	border:none;
-	padding:0;
-	height:100%;
-	width:100%;
-	overflow:hidden;
-}
-
 #hoverInfo{
 	font-size:10px;
 	font-family:Verdana, Geneva, sans-serif;
@@ -75,15 +66,6 @@ a:hover{
 	display:none;
 	z-index:101;
 	color:#000000;
-}
-
-#zoomToggle{
-	position:absolute;
-	left:15px;
-	top:15px;
-	width:32px;
-	z-index:2;
-	cursor:pointer;
 }
 
 #instructions {
