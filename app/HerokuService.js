@@ -17,7 +17,8 @@ function HerokuService(refreshHandler, REFRESH_RATE)
 			type: 'GET',
 			url: SERVICE_URL,
 			cache: true,
-			success: processLocations
+			success: processLocations,
+			error: function(event){console.log("uh-oh...")}
 		});			
 	}
 		
