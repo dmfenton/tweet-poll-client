@@ -21,7 +21,7 @@ function init() {
 	_service = new HerokuService(
 		function(flag) {
 			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
-			//writeTable(_service.getRecsSortedByName());	
+			writeTable(_service.getRecsSortedByName());	
 			if (_map) Common.loadGraphics(_map, _locations);	
 		}
 		, Config.REFRESH_RATE);
@@ -99,8 +99,19 @@ function layerOV_onClick(event)
 	*/
 }
 
+function writeTable(list)
+{
+	$("#table").empty();
+	var li;
+	$.each(list, function(index, value){
+		li = "<li><a>"+value.short_name+"<div class='hiddenData'>"+value.standardized_name+"</div></a></li>";
+		$("#table").append(li);
+	});
+	$(".page1 li").click(tableRec_onClick);
+}
+
 function handleWindowResize() {
-	$("#map").height($("body").height()-150);
-	$("#map").width($("body").width()-35);
+	$("#map").height($("body").height()- 78);
+	$("#map").width($("body").width());
 	_map.resize();
 }
