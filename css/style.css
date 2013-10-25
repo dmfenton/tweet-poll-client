@@ -188,10 +188,6 @@ a:hover{
 	color:white;
 }
 
-.page1 .hiddenData {
-	display:none;
-}
-
 .flip {
     -webkit-backface-visibility:hidden;
     -webkit-transform:translateX(0); 
