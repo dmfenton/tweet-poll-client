@@ -22,7 +22,7 @@ function init() {
 		function(flag) {
 			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
-			if (_map) Common.loadGraphics(_map, _locations);	
+			if (!($.mobile.activePage[0].id == "intro" || $.mobile.activePage[0].id == "list")) instantiateMap();
 		}
 		, Config.REFRESH_RATE);
 		
@@ -54,7 +54,7 @@ function init() {
 
 function instantiateMap()
 {
-
+	_counter++
 	_map = new esri.Map("map", {slider:false});
 	_map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer(Config.BASEMAP_SERVICE));
 
@@ -78,8 +78,7 @@ function finishMap() {
 		}
 	});
 	handleWindowResize();	
-	_map.centerAndZoom(_center, Config.LEVEL);
-	
+	setTimeout(function(){_map.centerAndZoom(_center, Config.LEVEL)}, 500);
 }
 
 
@@ -87,16 +86,24 @@ function finishMap() {
 	events
 **********/
 
+function tableRec_onClick(event)
+{
+	deselect();
+	var standardizedName = $(this).find(".hiddenData").html();
+	_selected = $.grep(_locations, function(n, i){return n.attributes.getStandardizedName() == standardizedName})[0];
+	$.mobile.changePage("#pageMap");
+	postSelection();
+	_map.centerAt(_selected.geometry);
+}
+
+
+
 function layerOV_onClick(event) 
 {
-	alert(event.graphic.attributes.getShortName());
-	/*
-	$("#hoverInfo").hide();
 	var graphic = event.graphic;
 	_selected = graphic;
 	postSelection();
 	adjustExtent();
-	*/
 }
 
 function writeTable(list)
@@ -107,7 +114,7 @@ function writeTable(list)
 		li = "<li><a>"+value.short_name+"<div class='hiddenData'>"+value.standardized_name+"</div></a></li>";
 		$("#table").append(li);
 	});
-	$(".page1 li").click(tableRec_onClick);
+	$("#table li").click(tableRec_onClick);
 }
 
 function handleWindowResize() {
@@ -115,3 +122,42 @@ function handleWindowResize() {
 	$("#map").width($("body").width());
 	_map.resize();
 }
+
+function deselect()
+{
+	_selected = null;
+	$("#map").multiTips({
+		pointArray : [],
+		labelValue: "",
+		mapVariable : _map,
+		labelDirection : "top",
+		backgroundColor : "#FFFFFF",
+		textColor : "#000000",
+		pointerColor: "#FFFFFF"
+	});
+}
+
+function postSelection()
+{
+	$("#map").multiTips({
+		pointArray : [_selected],
+		labelValue: _selected.attributes.getShortName(),
+		mapVariable : _map,
+		labelDirection : "top",
+		backgroundColor : "#FFFFFF",
+		textColor : "#000000",
+		pointerColor: "#FFFFFF"
+	});		
+	/*	
+		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
+	
+			$("#info").empty();
+			fetchTweets(recs);		
+			flipToLyrics();
+		});	
+	});
+	*/
+}
+
+
+
