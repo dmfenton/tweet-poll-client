@@ -204,7 +204,7 @@ function layerOV_onMouseOut(event)
 	var graphic = event.graphic;
 	_map.setMapCursor("default");
 	$("#hoverInfo").hide();
-	graphic.setSymbol(Common.createSymbol(Config.SYMBOL_BASE_SIZE*graphic.attributes.getCount(), SYMBOL_COLOR, 0.25));
+	graphic.setSymbol(Common.createSymbol(Config.SYMBOL_BASE_SIZE*graphic.attributes.getCount(), Config.SYMBOL_COLOR, 0.25));
 }
 
 function layerOV_onClick(event) 
