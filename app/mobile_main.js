@@ -49,8 +49,14 @@ function init() {
 		_counter++;
     });
 	
+	$("#btnSeeTweets").click(function(e) {
+		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){	
+			fetchTweets(recs);		
+	        $.mobile.changePage("#tweets");
+		});	
+    });
+	
 }
-
 
 function instantiateMap()
 {
@@ -103,7 +109,7 @@ function layerOV_onClick(event)
 	var graphic = event.graphic;
 	_selected = graphic;
 	postSelection();
-	adjustExtent();
+	_map.centerAt(_selected.geometry);
 }
 
 function writeTable(list)
@@ -135,6 +141,7 @@ function deselect()
 		textColor : "#000000",
 		pointerColor: "#FFFFFF"
 	});
+	$("#btnSeeTweets").fadeOut();
 }
 
 function postSelection()
@@ -147,17 +154,26 @@ function postSelection()
 		backgroundColor : "#FFFFFF",
 		textColor : "#000000",
 		pointerColor: "#FFFFFF"
-	});		
-	/*	
-		_service.queryRecsByCity(_selected.attributes.getStandardizedName(), function(recs){
-	
-			$("#info").empty();
-			fetchTweets(recs);		
-			flipToLyrics();
-		});	
-	});
-	*/
+	});	
+	$("#btnSeeTweets").html("See Tweets for <br>"+_selected.attributes.getShortName());
+	$("#btnSeeTweets").fadeIn();
 }
 
+function fetchTweets(recs)
+{	
+	$("#info").empty();
+	var count = 0;
+	$.each(recs, function(index, value) {
+		_twitter.fetch(value.tweet_id, 
+						function(result){
+							count++;
+							$("#info").append(result.html);
+						}, 
+						function(event){
+							count++;
+						}
+						);
+	});
+}
 
 
