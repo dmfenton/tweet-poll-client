@@ -18,7 +18,7 @@ function init() {
 	if (!_jqueryReady) return;
 	if (!_dojoReady) return;
 	
-	_service = new HerokuService(
+	_service = new AGOLService(
 		function(flag) {
 			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
