@@ -1,20 +1,12 @@
-function AGOLService()
+function AGOLService(refreshHandler, REFRESH_RATE)
 {
 
-	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0";
-
-	var SPREADSHEET_FIELDNAME_PLACENAME = "Place_name";
-	var SPREADSHEET_FIELDNAME_SONG = "Song";
-	var SPREADSHEET_FIELDNAME_ARTIST = "Artist";
-	var SPREADSHEET_FIELDNAME_HANDLE = "Handle";
-	var SPREADSHEET_FIELDNAME_LYRICS = "Lyrics";
-	var SPREADSHEET_FIELDNAME_X = "X";
-	var SPREADSHEET_FIELDNAME_Y = "Y";
-	var SPREADSHEET_FIELDNAME_STANDARDIZEDNAME = "Standardized_Name";
+	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/ArcGIS/rest/services/xmas_tweets/FeatureServer/0";	
+	var _recs;
 	
-	var ADDITIONAL_FIELDNAME_COUNT = "Count";
+	fetchLocations();
 		
-	this.getLocations = function(callBack) 
+	function fetchLocations() 
 	{
 		var locations = [];
 		var pt;
@@ -23,32 +15,87 @@ function AGOLService()
 		$.ajax({
 		  type: 'GET',
 		  dataType:'json',
-		  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Lyrical_Places/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Name&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Name%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
+		  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/ArcGIS/rest/services/xmas_tweets/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Location&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Location%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
 		  cache: false,
-		  success: function(text) {
-			  $.each(text.features, function(index, value) {
-					att = new LocationRec(
-						value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME].split(",")[0],
-						value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME],
-						value.attributes[ADDITIONAL_FIELDNAME_COUNT]
-					);
-					if ($.trim(value.attributes[SPREADSHEET_FIELDNAME_X]) != "") {
-						pt = new esri.geometry.Point(value.attributes[SPREADSHEET_FIELDNAME_X], value.attributes[SPREADSHEET_FIELDNAME_Y]);
-						locations.push(new esri.Graphic(pt, createSymbol(att.getCount()*SYMBOL_BASE_SIZE,0.25), att));
-					}
-			  });
-			// sort unique locations in descending order of count
-			locations.sort(function(a,b){return b.attributes.getCount() - a.attributes.getCount()});
-			callBack(locations);	
-		  }
-		});		
+		  success: processLocations
+		  });		
+	}
+	
+	function convertToRecs(features)
+	{
+		var recs = [];
+		$.each(features, function(index, value){
+			recs.push({
+				count: value.attributes.Count, 
+				x: value.attributes.X, 
+				y: value.attributes.Y, 
+				standardized_name: value.attributes.Standardized_Location, 
+				short_name: value.attributes.Standardized_Location.split(",")[0]
+			});
+		});
+		return recs;
+	}
+	
+	function processLocations(text)
+	{
+		if (_recs == null) {
+			_recs = convertToRecs(text.features);
+			refreshHandler(true);
+		} else {
+			var temp = convertToRecs(text.features);
+			console.log(temp);
+			if (diff(temp, _recs)) {
+				_recs = temp
+				refreshHandler(false);
+			}
+		}
+		setTimeout(fetchLocations, REFRESH_RATE);
+	}
+	
+	function diff(arr1, arr2)
+	{
+		var matches;
+		var flag = false;
+		$.each(arr1, function(index, value) {
+			matches = $.grep(arr2, function(n, i) {
+				return n.standardized_name == value.standardized_name;
+			});
+			if (matches.length > 0) {
+				if (matches[0].count != value.count) {
+					console.log("count changed");
+					flag = true;
+				}
+			} else {
+				console.log("new one!");
+				flag = true;
+			}
+		});
+		return flag;
+	}
+	
+	this.getRecsSortedByCount = function() 
+	{
+		var list = $.extend(true, [], _recs);
+		list.sort(function(a,b){return b.count - a.count});
+		return list;
+	}
+	
+	this.getRecsSortedByName = function()
+	{
+		var list = $.extend(true, [], _recs);
+		list.sort(function(a,b){
+			if (a.short_name < b.short_name) return -1;
+			if (a.short_name > b.short_name) return 1;
+			return 0;
+		});
+		return list;		
 	}
 	
 	this.queryRecsByCity = function(name,callBack)
 	{
 		
 		var query = new esri.tasks.Query();
-		query.where = SPREADSHEET_FIELDNAME_STANDARDIZEDNAME + " = '" + name+"'";
+		query.where = "Standardized_Location = '" + name+"'";
 		query.returnGeometry = false;
 		query.outFields = ["*"];
 		
@@ -56,15 +103,7 @@ function AGOLService()
 		queryTask.execute(query, function(result){
 			var recs = [];
 			$.each(result.features, function(index, value){
-				recs.push(new TableRec(
-					value.attributes[SPREADSHEET_FIELDNAME_PLACENAME],
-					value.attributes[SPREADSHEET_FIELDNAME_SONG],
-					value.attributes[SPREADSHEET_FIELDNAME_ARTIST],
-					value.attributes[SPREADSHEET_FIELDNAME_LYRICS],
-					value.attributes[SPREADSHEET_FIELDNAME_X],
-					value.attributes[SPREADSHEET_FIELDNAME_Y],
-					value.attributes[SPREADSHEET_FIELDNAME_STANDARDIZEDNAME]
-				));
+				recs.push({tweet_id: value.attributes.Tweet_ID});
 			});
 			callBack(recs);
 		});	
