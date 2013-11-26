@@ -1,7 +1,7 @@
 function AGOLService(refreshHandler, REFRESH_RATE)
 {
 
-	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/ArcGIS/rest/services/xmas_tweets/FeatureServer/0";	
+	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/fantasy-thanksgiving/FeatureServer/0";	
 	var _recs;
 	
 	fetchLocations();
@@ -15,7 +15,7 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 		$.ajax({
 		  type: 'GET',
 		  dataType:'json',
-		  url: "http://services.arcgis.com/nzS0F0zdNLvs7nc8/ArcGIS/rest/services/xmas_tweets/FeatureServer/0/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Location&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Location%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
+		  url: FEATURE_SERVICE_URL+"/query?where=1+%3D+1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&outFields=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=X%2CY%2CStandardized_Location&outStatistics=%5B%0D%0A++%7B%0D%0A++++%22statisticType%22%3A+%22count%22%2C%0D%0A++++%22onStatisticField%22%3A+%22Standardized_Location%22%2C%0D%0A++++%22outStatisticFieldName%22%3A+%22Count%22%0D%0A++%7D%0D%0A%5D&f=pjson&token=",
 		  cache: false,
 		  success: processLocations
 		  });		
