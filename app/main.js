@@ -250,8 +250,10 @@ function writeTable(list)
 {
 	$("#table").empty();
 	var li;
+	var voteText;
 	$.each(list, function(index, value){
-		li = "<li>"+value.short_name+"<div class='hiddenData'>"+value.standardized_name+"</div></li>";
+		voteText = value.count > 1 ? "votes" : "vote";
+		li = "<li>"+value.short_name+"  ("+value.count+" "+voteText+")<div class='hiddenData'>"+value.standardized_name+"</div></li>";
 		$("#table").append(li);
 	});
 	$(".page1 li").click(tableRec_onClick);
