@@ -1,7 +1,7 @@
 function AGOLService(refreshHandler, REFRESH_RATE)
 {
 
-	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/fantasy-thanksgiving/FeatureServer/0";	
+	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/BestXmasEverMap/FeatureServer/0";	
 	var _recs;
 	
 	fetchLocations();
