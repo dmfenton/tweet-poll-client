@@ -43,7 +43,6 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 			refreshHandler(true);
 		} else {
 			var temp = convertToRecs(text.features);
-			console.log(temp);
 			if (diff(temp, _recs)) {
 				_recs = temp
 				refreshHandler(false);
@@ -56,6 +55,12 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 	{
 		var matches;
 		var flag = false;
+		
+		if (hasDeletionOccurred(arr1, arr2)) {
+			console.log("deletion has occurred");
+			return true;
+		}
+		
 		$.each(arr1, function(index, value) {
 			matches = $.grep(arr2, function(n, i) {
 				return n.standardized_name == value.standardized_name;
@@ -67,6 +72,23 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 				}
 			} else {
 				console.log("new one!");
+				flag = true;
+			}
+		});
+		return flag;
+	}
+	
+	function hasDeletionOccurred(arrNew, arrOrig)
+	{
+		// is there a location in the original that is not
+		// in the new?
+		var matches;
+		var flag = false;
+		$.each(arrOrig, function(index, value) {
+			matches = $.grep(arrNew, function(n, i) {
+				return n.standardized_name == value.standardized_name;
+			});
+			if (matches.length == 0) {
 				flag = true;
 			}
 		});
