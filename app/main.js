@@ -134,6 +134,8 @@ function postSelection()
 {
 	
 	if ($("#question").css("display") != "none") $("#question").slideUp();
+	if ($("#hashtag").css("display") == "none") $("#hashtag").slideDown();
+
 	$("#locationTitle").empty();
 	$("#locationTitle").append("<b>"+_selected.attributes.getShortName()+"</b>");	
 	
