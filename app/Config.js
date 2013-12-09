@@ -8,7 +8,7 @@ Config.PARAMETER_STANDARDIZEDNAME = "standardizedName";
 Config.SYMBOL_BASE_SIZE = 7;
 Config.SYMBOL_COLOR = [255, 0, 0];
 
-Config.CENTER_X = -10910315;
-Config.CENTER_Y = 4002853;
-Config.LEVEL = 4;
+Config.CENTER_X = -3758255;
+Config.CENTER_Y = 6409702;
+Config.LEVEL = 3;
 Config.REFRESH_RATE = 3000;
