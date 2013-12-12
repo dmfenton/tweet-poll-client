@@ -113,11 +113,11 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 		return list;		
 	}
 	
-	this.queryRecsByCity = function(name,callBack)
+	this.queryRecsByCity = function(name, callBack)
 	{
 		
 		var query = new esri.tasks.Query();
-		query.where = "Standardized_Location = '" + name+"'";
+		query.where = "Standardized_Location = '"+name.replace("'", "''")+"'";
 		query.returnGeometry = false;
 		query.outFields = ["*"];
 		
