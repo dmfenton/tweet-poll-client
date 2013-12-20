@@ -11,4 +11,4 @@ Config.SYMBOL_COLOR = [255, 0, 0];
 Config.CENTER_X = -3758255;
 Config.CENTER_Y = 6409702;
 Config.LEVEL = 3;
-Config.REFRESH_RATE = 3000;
+Config.REFRESH_RATE = 5000;
