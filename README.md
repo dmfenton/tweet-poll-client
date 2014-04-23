@@ -1,4 +1,4 @@
-mapmylyrics
+tweet-poll-client
 ===========
 
-application files for the map my lyrics prototype
+application files for the tweet-poll-client
