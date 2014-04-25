@@ -254,7 +254,7 @@ function writeTable(list)
 	var li;
 	var voteText;
 	$.each(list, function(index, value){
-		voteText = value.count > 1 ? "votes" : "vote";
+		voteText = value.count > 1 ? "tweets" : "tweet";
 		li = "<li>"+value.short_name+"  ("+value.count+" "+voteText+")<div class='hiddenData'>"+value.standardized_name+"</div></li>";
 		$("#table").append(li);
 	});
