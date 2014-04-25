@@ -1,7 +1,7 @@
 function AGOLService(refreshHandler, REFRESH_RATE)
 {
 	
-	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/BestXmasEverMap/FeatureServer/0";	
+	var FEATURE_SERVICE_URL = "http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/ISS_Tweets/FeatureServer/0";	
 	var _recs;
 	
 	fetchLocations();
@@ -25,7 +25,7 @@ function AGOLService(refreshHandler, REFRESH_RATE)
         statDefY.outStatisticFieldName = "Y";
 
 		var query = new esri.tasks.Query();
-		query.where = "1 = 1";
+		query.where = "Matched = '1' and Hide = '0'";
 		query.returnGeometry = false;
 		query.outStatistics = [statDefCount, statDefX, statDefY];
 		query.groupByFieldsForStatistics = ["Standardized_Location"];
