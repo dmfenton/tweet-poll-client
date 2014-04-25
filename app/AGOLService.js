@@ -131,7 +131,7 @@ function AGOLService(refreshHandler, REFRESH_RATE)
 	{
 		
 		var query = new esri.tasks.Query();
-		query.where = "Standardized_Location = '"+name.replace("'", "''")+"'";
+		query.where = "Standardized_Location = '"+name.replace("'", "''")+"' and Hide = '0'";
 		query.returnGeometry = false;
 		query.outFields = ["*"];
 		
