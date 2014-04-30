@@ -27,6 +27,7 @@ function init() {
 	$(document).keydown(onKeyDown);
 	
 	_service = new AGOLService(
+		Config.FEATURE_SERVICE_URL,
 		function(flag) {
 			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
