@@ -79,6 +79,19 @@ function finishInit() {
 		deselect();
     });
 	
+	$("#hashtag").html(Config.TWEET_KEYWORD+"<br/><br/>");
+
+	var intent = "https://twitter.com/intent/tweet"+
+	             "?text="+escape(Config.TWEET_INTENT_TEXT)+
+				 "&url="+(Config.BITLY ? Config.BITLY : document.URL);
+	if (Config.TWEET_KEYWORD.chartAt(0) == "#") {
+		intent = intent+"&hashtags="+Config.TWEET_KEYWORD.replace("#","");
+	} else {
+		intent = intent+"&via="+Config.TWEET_KEYWORD.replace("@","")
+	}
+
+	$("#tweetIntent").attr("href", intent);
+	
 	Common.loadGraphics(_map, _locations);	
 	
 	var starterName = Common.getStarterName(Config.PARAMETER_STANDARDIZEDNAME);
