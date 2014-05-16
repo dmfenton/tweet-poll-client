@@ -19,12 +19,13 @@ function init() {
 	if (!_dojoReady) return;
 	
 	_service = new AGOLService(
+		Config.FEATURE_SERVICE_URL,
 		function(flag) {
 			_locations = Common.createGraphics(_service.getRecsSortedByCount(), Config.SYMBOL_BASE_SIZE, Config.SYMBOL_COLOR);
 			writeTable(_service.getRecsSortedByName());	
 			if (!($.mobile.activePage[0].id == "intro" || $.mobile.activePage[0].id == "list")) instantiateMap();
-		}
-		, Config.REFRESH_RATE);
+		}, 
+		Config.REFRESH_RATE);
 		
 	_twitter = new TwitterService();
 	
