@@ -120,6 +120,11 @@ function finishInit() {
 	});
 	
 	handleWindowResize();
+	
+	$(".qType").change(function(e) {
+        _service.setPictureOnly($('input[name=queryType]:checked').val() == "picture");
+    });		
+			
 	$("#whiteOut").fadeOut();
 		
 }

@@ -2,7 +2,8 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 {
 	
 	var _recs;
-	
+	var _pictureOnly = false;
+		
 	fetchLocations();
 		
 	function fetchLocations() 
@@ -25,6 +26,7 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 
 		var query = new esri.tasks.Query();
 		query.where = "Matched = '1' and Hide = '0'";
+		if (_pictureOnly) query.where = query.where + " and Media = '1'";
 		query.returnGeometry = false;
 		query.outStatistics = [statDefCount, statDefX, statDefY];
 		query.groupByFieldsForStatistics = ["Standardized_Location"];
@@ -131,6 +133,7 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 		
 		var query = new esri.tasks.Query();
 		query.where = "Standardized_Location = '"+name.replace("'", "''")+"' and Hide = '0'";
+		if (_pictureOnly) query.where = query.where + " and Media = '1'";
 		query.returnGeometry = false;
 		query.outFields = ["*"];
 		
@@ -143,6 +146,12 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 			callBack(recs);
 		});	
 	}
-	
-	
+
+
+	this.setPictureOnly = function(val)
+	{
+		_pictureOnly = val;
+		fetchLocations();
+	}	
+		
 }
