@@ -11,25 +11,25 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 
 		var statDefCount = new esri.tasks.StatisticDefinition();
         statDefCount.statisticType = "count";
-        statDefCount.onStatisticField = "Standardized_Location";
+        statDefCount.onStatisticField = "Stand_loc";
         statDefCount.outStatisticFieldName = "Count";
 
 		var statDefX = new esri.tasks.StatisticDefinition();
         statDefX.statisticType = "min";
-        statDefX.onStatisticField = "X";
-        statDefX.outStatisticFieldName = "X";
+        statDefX.onStatisticField = "X_coord";
+        statDefX.outStatisticFieldName = "X_coord";
 
 		var statDefY = new esri.tasks.StatisticDefinition();
         statDefY.statisticType = "min";
-        statDefY.onStatisticField = "Y";
-        statDefY.outStatisticFieldName = "Y";
+        statDefY.onStatisticField = "Y_coord";
+        statDefY.outStatisticFieldName = "Y_coord";
 
 		var query = new esri.tasks.Query();
 		query.where = "Matched = '1' and Hide = '0'";
 		if (_pictureOnly) query.where = query.where + " and Media = '1'";
 		query.returnGeometry = false;
 		query.outStatistics = [statDefCount, statDefX, statDefY];
-		query.groupByFieldsForStatistics = ["Standardized_Location"];
+		query.groupByFieldsForStatistics = ["Stand_loc"];
 						
 		var queryTask = new esri.tasks.QueryTask(FEATURE_SERVICE_URL);
 		queryTask.execute(query, processLocations);
@@ -42,10 +42,10 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 		$.each(features, function(index, value){
 			recs.push({
 				count: value.attributes.Count, 
-				x: value.attributes.X, 
-				y: value.attributes.Y, 
-				standardized_name: value.attributes.Standardized_Location, 
-				short_name: value.attributes.Standardized_Location.split(",")[0]
+				x: value.attributes.X_coord, 
+				y: value.attributes.Y_coord, 
+				standardized_name: value.attributes.Stand_loc, 
+				short_name: value.attributes.Stand_loc.split(",")[0]
 			});
 		});
 		return recs;
@@ -132,7 +132,7 @@ function AGOLService(FEATURE_SERVICE_URL, refreshHandler, REFRESH_RATE)
 	{
 		
 		var query = new esri.tasks.Query();
-		query.where = "Standardized_Location = '"+name.replace("'", "''")+"' and Hide = '0'";
+		query.where = "Stand_loc = '"+name.replace("'", "''")+"' and Hide = '0'";
 		if (_pictureOnly) query.where = query.where + " and Media = '1'";
 		query.returnGeometry = false;
 		query.outFields = ["*"];
